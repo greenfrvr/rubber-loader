@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="default_diff">8dp</dimen>
+    <dimen name="default_radius">48dp</dimen>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RubberLoaderView">
+        <attr name="minCircleRadius" format="dimension"/>
+        <attr name="maxCircleRadius" format="dimension"/>
+        <attr name="minCircleColor" format="color|reference"/>
+        <attr name="maxCircleColor" format="color|reference"/>
+    </declare-styleable>
+</resources>
