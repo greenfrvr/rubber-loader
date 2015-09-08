@@ -1,16 +1,37 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".MainActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:weightSum="3"
+              tools:context=".MainActivity">
 
     <com.greenfrvr.rubberloader.RubberLoaderView
-        android:id="@+id/loader"
-        android:background="#494c54"
+        android:id="@+id/loader1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:minCircleColor="@color/min_color"
-        app:maxCircleColor="@color/max_color"/>
+        android:layout_weight="1"
+        android:background="#494c54"
+        app:maxCircleColor="@color/max_color"
+        app:minCircleColor="@color/min_color"/>
 
-</FrameLayout>
+    <com.greenfrvr.rubberloader.RubberLoaderView
+        android:id="@+id/loader2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#494c54"
+        app:maxCircleColor="@color/max_color"
+        app:minCircleColor="@color/min_color"/>
+
+    <com.greenfrvr.rubberloader.RubberLoaderView
+        android:id="@+id/loader3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#494c54"
+        app:maxCircleColor="@color/max_color"
+        app:minCircleColor="@color/min_color"/>
+
+</LinearLayout>

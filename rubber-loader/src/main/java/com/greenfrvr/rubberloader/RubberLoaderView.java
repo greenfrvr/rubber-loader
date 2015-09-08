@@ -18,6 +18,12 @@ import android.view.View;
  */
 public class RubberLoaderView extends View {
 
+    //debug
+    public static final int MODE_2_CUBIC = 0;
+    public static final int MODE_4_CUBIC = 1;
+    public static final int MODE_2_QUADS = 2;
+    int algorythm;
+
     private float radius;
     private float diff;
 
@@ -56,6 +62,10 @@ public class RubberLoaderView extends View {
     public void startLoading(long delay) {
         coordinator.setStartDelay(delay);
         coordinator.start();
+    }
+
+    public void algorythm(int a) {
+        algorythm = a;
     }
 
     private void extractAttrs(AttributeSet attrs) {
@@ -102,7 +112,18 @@ public class RubberLoaderView extends View {
         super.onDraw(canvas);
         evaluateCoors();
         updatePaint();
-        drawPath(canvas);
+
+        switch (algorythm) {
+            case MODE_2_CUBIC:
+                drawPath2Cubics(canvas);
+                break;
+            case MODE_2_QUADS:
+                draw2Quads(canvas);
+                break;
+            case MODE_4_CUBIC:
+                drawPath4Cubics(canvas);
+                break;
+        }
     }
 
     private void evaluateCenter() {
@@ -128,16 +149,18 @@ public class RubberLoaderView extends View {
         rightRect.offset(centerX, centerY);
     }
 
-    private void drawPath(Canvas canvas) {
+    private void drawPath2Cubics(Canvas canvas) {
         path.rewind();
 
         path.addArc(leftRect, 90, 180);
         path.addArc(rightRect, 90, -180);
 
+        float middle = (leftRect.centerX() + rightRect.centerX()) / 2;
+
         path.moveTo(leftRect.centerX(), leftRect.top);
         path.cubicTo(
-                (leftRect.centerX() + rightRect.centerX()) / 2, leftRect.top,
-                (leftRect.centerX() + rightRect.centerX()) / 2, rightRect.top,
+                middle, leftRect.top,
+                middle, rightRect.top,
                 rightRect.centerX(), rightRect.top);
         path.lineTo(rightRect.centerX(), rightRect.bottom);
 
@@ -150,13 +173,70 @@ public class RubberLoaderView extends View {
         canvas.drawPath(path, pathPaint);
     }
 
+    private void drawPath4Cubics(Canvas canvas) {
+        path.rewind();
+
+        path.addArc(leftRect, 90, 180);
+        path.addArc(rightRect, 90, -180);
+
+        float middle = (leftRect.centerX() + rightRect.centerX()) / 2;
+
+        path.moveTo(leftRect.centerX(), leftRect.top);
+        //top left curve half
+        path.cubicTo(
+                (leftRect.centerX() + middle) / 2, leftRect.top,
+                (leftRect.centerX() + middle) / 2, centerY - radius + diff * Math.abs(t) * (t > 0 ? 1.0f : 1.1f),
+                centerX, centerY - radius + 1.1f * diff * Math.abs(t));
+        //top right curve half
+        path.cubicTo(
+                (rightRect.centerX() + middle) / 2, centerY - radius + diff * Math.abs(t) * (t < 0 ? 1.0f : 1.1f),
+                (rightRect.centerX() + middle) / 2, rightRect.top,
+                rightRect.centerX(), rightRect.top);
+        path.lineTo(rightRect.centerX(), rightRect.bottom);
+
+        //bottom right curve half
+        path.cubicTo(
+                (rightRect.centerX() + middle) / 2, rightRect.bottom,
+                (rightRect.centerX() + middle) / 2, centerY + radius - diff * Math.abs(t) * (t < 0 ? 1.0f : 1.1f),
+                centerX, centerY + radius - 1.1f * diff * Math.abs(t));
+        //bottom left curve half
+        path.cubicTo(
+                (leftRect.centerX() + middle) / 2, centerY + radius - diff * Math.abs(t) * (t > 0 ? 1.0f : 1.1f),
+                (leftRect.centerX() + middle) / 2, leftRect.bottom,
+                leftRect.centerX(), leftRect.bottom);
+        path.lineTo(leftRect.centerX(), leftRect.top);
+
+        canvas.drawPath(path, pathPaint);
+    }
+
+    private void draw2Quads(Canvas canvas) {
+        path.rewind();
+
+        path.addCircle(leftRect.centerX(), leftRect.centerY(), leftRect.width() / 2, Path.Direction.CW);
+        path.addCircle(rightRect.centerX(), rightRect.centerY(), rightRect.width() / 2, Path.Direction.CW);
+
+        float middle = (leftRect.centerX() + rightRect.centerX()) / 2;
+
+        path.moveTo(leftRect.centerX(), leftRect.top);
+        path.quadTo(
+                middle, centerY - radius + 1.2f * diff * Math.abs(t),
+                rightRect.centerX(), rightRect.top);
+        path.lineTo(rightRect.centerX(), rightRect.bottom);
+
+        path.quadTo(
+                middle, centerY + radius - 1.2f * diff * Math.abs(t),
+                leftRect.centerX(), leftRect.bottom);
+        path.lineTo(leftRect.centerX(), leftRect.top);
+
+        canvas.drawPath(path, pathPaint);
+    }
+
     private void updatePaint() {
         gradMatrix.reset();
         gradMatrix.setTranslate(2.5f * radius * (1 - Math.abs(t)) * (1 - Math.abs(t)), 0);
         gradMatrix.postRotate(Math.signum(t) > 0 ? 0 : 180, centerX, centerY);
 
         gradient.setLocalMatrix(gradMatrix);
-
     }
 
     protected void invalidate(Float value) {
