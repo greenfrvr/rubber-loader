@@ -2,10 +2,10 @@ package com.greenfrvr.rubberloader;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -24,18 +24,18 @@ public class RubberLoaderView extends View {
     private int color1;
     private int color2;
 
-    private RectF leftRect = new RectF();
-    private RectF rightRect = new RectF();
-    private Path path = new Path();
-
-    private Paint pathPaint = new Paint();
-    private Shader gradient1;
-    private Shader gradient2;
-
     private int centerX;
     private int centerY;
 
-    private Float t = 0f;
+    private Path path = new Path();
+    private RectF leftRect = new RectF();
+    private RectF rightRect = new RectF();
+    private Paint pathPaint = new Paint();
+
+    private Shader gradient;
+    private Matrix gradMatrix = new Matrix();
+
+    private Float t = -1f;
 
     private Coordinator coordinator;
 
@@ -47,6 +47,15 @@ public class RubberLoaderView extends View {
         super(context, attrs);
         extractAttrs(attrs);
         prepare();
+    }
+
+    public void startLoading() {
+        coordinator.start();
+    }
+
+    public void startLoading(long delay) {
+        coordinator.setStartDelay(delay);
+        coordinator.start();
     }
 
     private void extractAttrs(AttributeSet attrs) {
@@ -74,20 +83,18 @@ public class RubberLoaderView extends View {
         coordinator = new Coordinator(this);
     }
 
-    public void startLoading() {
-        coordinator.start();
+    private void prepareGradient() {
+        gradient = new LinearGradient(leftRect.centerX() + 2 * diff, 0, rightRect.centerX() - 2 * diff, 0, color1, color2, Shader.TileMode.CLAMP);
+        pathPaint.setShader(gradient);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        centerX = getWidth() / 2;
-        centerY = getHeight() / 2;
-
+        evaluateCenter();
         evaluateCoors();
-
-        gradient1 = new LinearGradient(leftRect.centerX(), 0, rightRect.centerX(), 0, color1, color2, Shader.TileMode.CLAMP);
-        gradient2 = new LinearGradient(leftRect.centerX(), 0, rightRect.centerX(), 0, color2, color1, Shader.TileMode.CLAMP);
+        prepare();
+        prepareGradient();
     }
 
     @Override
@@ -96,6 +103,11 @@ public class RubberLoaderView extends View {
         evaluateCoors();
         updatePaint();
         drawPath(canvas);
+    }
+
+    private void evaluateCenter() {
+        centerX = getWidth() / 2;
+        centerY = getHeight() / 2;
     }
 
     private void evaluateCoors() {
@@ -107,7 +119,8 @@ public class RubberLoaderView extends View {
                 -Math.abs(t) * 4 * diff + (radius - diff * value1), radius - diff * value1
         );
 
-        rightRect.set(Math.abs(t) * 4 * diff - (radius - diff * value2), -(radius - diff * value2),
+        rightRect.set(
+                Math.abs(t) * 4 * diff - (radius - diff * value2), -(radius - diff * value2),
                 Math.abs(t) * 4 * diff + (radius - diff * value2), radius - diff * value2
         );
 
@@ -138,7 +151,12 @@ public class RubberLoaderView extends View {
     }
 
     private void updatePaint() {
-        pathPaint.setShader(Math.abs(t) < 0.15f ? null : t > 0 ? gradient2 : gradient1);
+        gradMatrix.reset();
+        gradMatrix.setTranslate(2.5f * radius * (1 - Math.abs(t)) * (1 - Math.abs(t)), 0);
+        gradMatrix.postRotate(Math.signum(t) > 0 ? 0 : 180, centerX, centerY);
+
+        gradient.setLocalMatrix(gradMatrix);
+
     }
 
     protected void invalidate(Float value) {
