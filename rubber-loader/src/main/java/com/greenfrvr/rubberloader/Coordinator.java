@@ -11,7 +11,7 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
 
     public Coordinator(RubberLoaderView view) {
         setFloatValues(-1, 1);
-        setDuration(700);
+        setDuration(800);
         setRepeatMode(REVERSE);
         setRepeatCount(INFINITE);
         addUpdateListener(this);

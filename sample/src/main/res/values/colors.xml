@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="max_color">#16ffeb</color>
-    <color name="min_color">#11ffc6</color>
+    <color name="min_color">#16ffeb</color>
+    <color name="max_color">#11ffc6</color>
+
+    <color name="indigo">#3f51b5</color>
+    <color name="pink">#ff4081</color>
+
 </resources>
