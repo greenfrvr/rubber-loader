@@ -94,7 +94,7 @@ public class RubberLoaderView extends View {
     }
 
     private void prepareGradient() {
-        gradient = new LinearGradient(leftRect.centerX() + 2 * diff, 0, rightRect.centerX() - 2 * diff, 0, color1, color2, Shader.TileMode.CLAMP);
+        gradient = new LinearGradient(leftRect.centerX(), 0, rightRect.centerX(), 0, color1, color2, Shader.TileMode.CLAMP);
         pathPaint.setShader(gradient);
     }
 
@@ -215,18 +215,23 @@ public class RubberLoaderView extends View {
         path.addCircle(leftRect.centerX(), leftRect.centerY(), leftRect.width() / 2, Path.Direction.CW);
         path.addCircle(rightRect.centerX(), rightRect.centerY(), rightRect.width() / 2, Path.Direction.CW);
 
-        float middle = (leftRect.centerX() + rightRect.centerX()) / 2;
+        double[][] inter = Calculator.circlesIntersection(leftRect, rightRect);
+        if (inter == null)
+            inter = new double[][]{{leftRect.centerX(), leftRect.top}, {leftRect.centerX(), leftRect.bottom}};
 
-        path.moveTo(leftRect.centerX(), leftRect.top);
-        path.quadTo(
-                middle, centerY - radius + 1.2f * diff * Math.abs(t),
-                rightRect.centerX(), rightRect.top);
-        path.lineTo(rightRect.centerX(), rightRect.bottom);
+        float topX = (float) inter[0][0], topY = (float) inter[0][1] - .7f * diff * Math.abs(t);
+        float botX = (float) inter[1][0], botY = (float) inter[1][1] + .7f * diff * Math.abs(t);
 
-        path.quadTo(
-                middle, centerY + radius - 1.2f * diff * Math.abs(t),
-                leftRect.centerX(), leftRect.bottom);
-        path.lineTo(leftRect.centerX(), leftRect.top);
+        double[][] coors1 = Calculator.evaluateBezierEndpoints(leftRect, rightRect, topX, topY, true);
+        double[][] coors2 = Calculator.evaluateBezierEndpoints(leftRect, rightRect, botX, botY, false);
+
+        path.moveTo((float) coors1[0][0], (float) coors1[0][1]);
+        path.quadTo(topX, topY, (float) coors1[1][0], (float) coors1[1][1]);
+
+        path.lineTo((float) coors2[1][0], (float) coors2[1][1]);
+        path.quadTo(botX, botY, (float) coors2[0][0], (float) coors2[0][1]);
+
+        path.lineTo((float) coors1[0][0], (float) coors1[0][1]);
 
         canvas.drawPath(path, pathPaint);
     }
