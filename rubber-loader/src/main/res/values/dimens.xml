@@ -1,4 +1,13 @@
 <resources>
-    <dimen name="default_diff">8dp</dimen>
-    <dimen name="default_radius">48dp</dimen>
+    <dimen name="default_diff">3dp</dimen>
+    <dimen name="default_radius">18dp</dimen>
+
+    <dimen name="normal_diff">4dp</dimen>
+    <dimen name="normal_radius">24dp</dimen>
+
+    <dimen name="big_diff">6dp</dimen>
+    <dimen name="big_radius">36dp</dimen>
+
+    <dimen name="large_diff">6dp</dimen>
+    <dimen name="large_radius">36dp</dimen>
 </resources>
