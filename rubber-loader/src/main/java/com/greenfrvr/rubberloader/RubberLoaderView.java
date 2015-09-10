@@ -18,12 +18,6 @@ import android.view.View;
  */
 public class RubberLoaderView extends View {
 
-    //debug
-    public static final int MODE_2_CUBIC = 0;
-    public static final int MODE_4_CUBIC = 1;
-    public static final int MODE_2_QUADS = 2;
-    int algorythm;
-
     private float radius;
     private float diff;
 
@@ -45,6 +39,10 @@ public class RubberLoaderView extends View {
 
     private Coordinator coordinator;
 
+    private double[][] intersection = new double[2][2];
+    private double[][] topBezier = new double[2][2];
+    private double[][] botBezier = new double[2][2];
+
     public RubberLoaderView(Context context) {
         super(context);
     }
@@ -62,10 +60,6 @@ public class RubberLoaderView extends View {
     public void startLoading(long delay) {
         coordinator.setStartDelay(delay);
         coordinator.start();
-    }
-
-    public void algorythm(int a) {
-        algorythm = a;
     }
 
     private void extractAttrs(AttributeSet attrs) {
@@ -112,18 +106,7 @@ public class RubberLoaderView extends View {
         super.onDraw(canvas);
         evaluateCoors();
         updatePaint();
-
-        switch (algorythm) {
-            case MODE_2_CUBIC:
-                drawPath2Cubics(canvas);
-                break;
-            case MODE_2_QUADS:
-                draw2Quads(canvas);
-                break;
-            case MODE_4_CUBIC:
-                drawPath4Cubics(canvas);
-                break;
-        }
+        draw2Quads(canvas);
     }
 
     private void evaluateCenter() {
@@ -139,7 +122,6 @@ public class RubberLoaderView extends View {
                 -Math.abs(t) * 4 * diff - (radius - diff * value1), -(radius - diff * value1),
                 -Math.abs(t) * 4 * diff + (radius - diff * value1), radius - diff * value1
         );
-
         rightRect.set(
                 Math.abs(t) * 4 * diff - (radius - diff * value2), -(radius - diff * value2),
                 Math.abs(t) * 4 * diff + (radius - diff * value2), radius - diff * value2
@@ -149,89 +131,23 @@ public class RubberLoaderView extends View {
         rightRect.offset(centerX, centerY);
     }
 
-    private void drawPath2Cubics(Canvas canvas) {
-        path.rewind();
-
-        path.addArc(leftRect, 90, 180);
-        path.addArc(rightRect, 90, -180);
-
-        float middle = (leftRect.centerX() + rightRect.centerX()) / 2;
-
-        path.moveTo(leftRect.centerX(), leftRect.top);
-        path.cubicTo(
-                middle, leftRect.top,
-                middle, rightRect.top,
-                rightRect.centerX(), rightRect.top);
-        path.lineTo(rightRect.centerX(), rightRect.bottom);
-
-        path.cubicTo(
-                centerX, rightRect.bottom,
-                centerX, leftRect.bottom,
-                leftRect.centerX(), leftRect.bottom);
-        path.lineTo(leftRect.centerX(), leftRect.top);
-
-        canvas.drawPath(path, pathPaint);
-    }
-
-    private void drawPath4Cubics(Canvas canvas) {
-        path.rewind();
-
-        path.addArc(leftRect, 90, 180);
-        path.addArc(rightRect, 90, -180);
-
-        float middle = (leftRect.centerX() + rightRect.centerX()) / 2;
-
-        path.moveTo(leftRect.centerX(), leftRect.top);
-        //top left curve half
-        path.cubicTo(
-                (leftRect.centerX() + middle) / 2, leftRect.top,
-                (leftRect.centerX() + middle) / 2, centerY - radius + diff * Math.abs(t) * (t > 0 ? 1.0f : 1.1f),
-                centerX, centerY - radius + 1.1f * diff * Math.abs(t));
-        //top right curve half
-        path.cubicTo(
-                (rightRect.centerX() + middle) / 2, centerY - radius + diff * Math.abs(t) * (t < 0 ? 1.0f : 1.1f),
-                (rightRect.centerX() + middle) / 2, rightRect.top,
-                rightRect.centerX(), rightRect.top);
-        path.lineTo(rightRect.centerX(), rightRect.bottom);
-
-        //bottom right curve half
-        path.cubicTo(
-                (rightRect.centerX() + middle) / 2, rightRect.bottom,
-                (rightRect.centerX() + middle) / 2, centerY + radius - diff * Math.abs(t) * (t < 0 ? 1.0f : 1.1f),
-                centerX, centerY + radius - 1.1f * diff * Math.abs(t));
-        //bottom left curve half
-        path.cubicTo(
-                (leftRect.centerX() + middle) / 2, centerY + radius - diff * Math.abs(t) * (t > 0 ? 1.0f : 1.1f),
-                (leftRect.centerX() + middle) / 2, leftRect.bottom,
-                leftRect.centerX(), leftRect.bottom);
-        path.lineTo(leftRect.centerX(), leftRect.top);
-
-        canvas.drawPath(path, pathPaint);
-    }
-
     private void draw2Quads(Canvas canvas) {
         path.rewind();
 
         path.addCircle(leftRect.centerX(), leftRect.centerY(), leftRect.width() / 2, Path.Direction.CW);
         path.addCircle(rightRect.centerX(), rightRect.centerY(), rightRect.width() / 2, Path.Direction.CW);
 
-        double[][] inter = Calculator.circlesIntersection(leftRect, rightRect);
-        if (inter == null)
-            inter = new double[][]{{leftRect.centerX(), leftRect.top}, {leftRect.centerX(), leftRect.bottom}};
+        Calculator.circlesIntersection(leftRect, rightRect, intersection);
+        Calculator.evaluateBezierEndpoints(leftRect, rightRect, (float) intersection[0][0], (float) intersection[0][1] - .7f * diff * Math.abs(t), topBezier, true);
+        Calculator.evaluateBezierEndpoints(leftRect, rightRect, (float) intersection[1][0], (float) intersection[1][1] + .7f * diff * Math.abs(t), botBezier, false);
 
-        float topX = (float) inter[0][0], topY = (float) inter[0][1] - .7f * diff * Math.abs(t);
-        float botX = (float) inter[1][0], botY = (float) inter[1][1] + .7f * diff * Math.abs(t);
+        path.moveTo((float) topBezier[0][0], (float) topBezier[0][1]);
+        path.quadTo((float) intersection[0][0], (float) intersection[0][1] - .7f * diff * Math.abs(t), (float) topBezier[1][0], (float) topBezier[1][1]);
 
-        double[][] coors1 = Calculator.evaluateBezierEndpoints(leftRect, rightRect, topX, topY, true);
-        double[][] coors2 = Calculator.evaluateBezierEndpoints(leftRect, rightRect, botX, botY, false);
+        path.lineTo((float) botBezier[1][0], (float) botBezier[1][1]);
+        path.quadTo((float) intersection[1][0], (float) intersection[1][1] + .7f * diff * Math.abs(t), (float) botBezier[0][0], (float) botBezier[0][1]);
 
-        path.moveTo((float) coors1[0][0], (float) coors1[0][1]);
-        path.quadTo(topX, topY, (float) coors1[1][0], (float) coors1[1][1]);
-
-        path.lineTo((float) coors2[1][0], (float) coors2[1][1]);
-        path.quadTo(botX, botY, (float) coors2[0][0], (float) coors2[0][1]);
-
-        path.lineTo((float) coors1[0][0], (float) coors1[0][1]);
+        path.lineTo((float) topBezier[0][0], (float) topBezier[0][1]);
 
         canvas.drawPath(path, pathPaint);
     }

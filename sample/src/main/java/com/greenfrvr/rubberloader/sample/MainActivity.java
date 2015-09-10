@@ -22,13 +22,8 @@ public class MainActivity extends AppCompatActivity {
         Timber.plant(new Timber.DebugTree());
         ButterKnife.bind(this);
 
-        loaderView1.algorythm(RubberLoaderView.MODE_2_CUBIC);
-        loaderView1.startLoading(500);
-
-        loaderView2.algorythm(RubberLoaderView.MODE_4_CUBIC);
-        loaderView2.startLoading(500);
-
-        loaderView3.algorythm(RubberLoaderView.MODE_2_QUADS);
+        loaderView1.startLoading();
+        loaderView2.startLoading(250);
         loaderView3.startLoading(500);
     }
 

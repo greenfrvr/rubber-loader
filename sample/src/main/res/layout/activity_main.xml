@@ -13,8 +13,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="#494c54"
-        app:maxCircleColor="@color/max_color"
-        app:minCircleColor="@color/min_color"/>
+        app:maxCircleColor="@color/pink"
+        app:minCircleColor="@color/indigo"/>
 
     <com.greenfrvr.rubberloader.RubberLoaderView
         android:id="@+id/loader2"
@@ -22,8 +22,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="#494c54"
-        app:maxCircleColor="@color/max_color"
-        app:minCircleColor="@color/min_color"/>
+        app:maxCircleColor="@color/lime"
+        app:minCircleColor="@color/teal"/>
 
     <com.greenfrvr.rubberloader.RubberLoaderView
         android:id="@+id/loader3"
