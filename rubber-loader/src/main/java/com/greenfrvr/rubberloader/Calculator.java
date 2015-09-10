@@ -9,7 +9,7 @@ class Calculator {
 
 
     /**
-     * Find two circles intersection points. Three situation are possible:
+     * Defines two circles intersection points. Three situation are possible:
      * <br/>1. Circles intersect in 2 points
      * <br/>2. Circles intersect in 1 point
      * <br/>3. Circles has no intersection points
@@ -50,14 +50,14 @@ class Calculator {
     }
 
     /**
-     * Defines tangents of a circle which go through given point. Lines defined by equation <i>y = k * x + b</i>.
+     * Defines tangents of a circle which go through given point. Lines defined by equation <i>y = k * x + l</i>.
      *
      * @param cx circle x coordinate
      * @param cy circle y coordinate
      * @param r  circle radius
      * @param px point x coordinate
      * @param py point y coordinate
-     * @return array of lines coefficients (k and b) in form of <i>[k1, b1, k2, b2]</i>
+     * @return array of lines coefficients (k and l) in form of <i>[k1, l1, k2, l2]</i>
      */
     public static double[] tangentLines(float cx, float cy, float r, float px, float py) {
         System.out.println("Circle - [(x,y):(" + cx + "," + cy + "), r: " + r + ", Point - [(x,y):" + px + ", " + py + "]");
@@ -74,6 +74,42 @@ class Calculator {
                 res = new double[]{ks[0], py - ks[0] * px};
             } else {
                 res = new double[]{ks[0], py - ks[0] * px, ks[1], py - ks[1] * px};
+            }
+        } catch (NoSolutionException e) {
+            System.out.println(e.getMessage());
+        } catch (NonEquationException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return res;
+    }
+
+    /**
+     * Defines intersection of a line and a circle.Three situation are possible:
+     * <br/>1. Line intersects circle in 2 points
+     * <br/>2. Line intersects circle in 1 point
+     * <br/>3. Line and circle has no common points
+     *
+     * @param cx circle x coordinate
+     * @param cy circle y coordinate
+     * @param r  circle radius
+     * @param k slope of the line
+     * @param l y-intercept of the line
+     * @return array of intersection points in form of <i>[x0, y0, x1, y2]</i>, null if line doesn't intercept circle
+     */
+    public static double[] circleLineIntersection(float cx, float cy, float r, float k, float l) {
+        double[] res = null;
+
+        float a = k * k + 1;
+        float b = 2 * (l * k - cx - cy * k);
+        float c = b * b + cx * cx + cy * cy - r * r - 2 * b * cy;
+
+        try {
+            double[] ps = roots(a, b, c);
+            if (ps.length == 1) {
+                res = new double[]{ps[0], k * ps[0] + l};
+            } else {
+                res = new double[]{ps[0], k * ps[0] + l, ps[1], k * ps[1] + l};
             }
         } catch (NoSolutionException e) {
             System.out.println(e.getMessage());
