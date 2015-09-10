@@ -49,6 +49,41 @@ class Calculator {
         return res;
     }
 
+    /**
+     * Defines tangents of a circle which go through given point. Lines defined by equation <i>y = k * x + b</i>.
+     *
+     * @param cx circle x coordinate
+     * @param cy circle y coordinate
+     * @param r  circle radius
+     * @param px point x coordinate
+     * @param py point y coordinate
+     * @return array of lines coefficients (k and b) in form of <i>[k1, b1, k2, b2]</i>
+     */
+    public static double[] tangentLines(float cx, float cy, float r, float px, float py) {
+        System.out.println("Circle - [(x,y):(" + cx + "," + cy + "), r: " + r + ", Point - [(x,y):" + px + ", " + py + "]");
+
+        double[] res = null;
+
+        float a = 4 * (r * r - px * px - cx * cx + 2 * px * cx);
+        float b = 8 * (px * py + cx * cy - px * cy - py * cx);
+        float c = 4 * (r * r - py * py - py * cy - cy * cy);
+
+        try {
+            double[] ks = roots(a, b, c);
+            if (ks.length == 1) {
+                res = new double[]{ks[0], py - ks[0] * px};
+            } else {
+                res = new double[]{ks[0], py - ks[0] * px, ks[1], py - ks[1] * px};
+            }
+        } catch (NoSolutionException e) {
+            System.out.println(e.getMessage());
+        } catch (NonEquationException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return res;
+    }
+
     private static double[] intersection(float x, float y, float r, float q, boolean order) {
 
         float a = x * x + y * y;
