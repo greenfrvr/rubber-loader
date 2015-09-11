@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">RubberLoader demo</string>
+
+    <string name="title_intro">Waiting will not ever be boring again</string>
+    <string name="title_sizes">Choose your size</string>
+    <string name="title_gradient">Match your style</string>
+    <string name="title_contact">Sources and feedback</string>
+
+    <string name="size_tiny">Tiny</string>
+    <string name="size_small">Small (default)</string>
+    <string name="size_normal">Normal</string>
+    <string name="size_medium">Medium</string>
+
+    <string name="contact">Contact greenfrvr.dev@gmail.com for any ideas or suggestions</string>
+    <string name="sources">All sources available on GitHub</string>
+    <string name="check_updates">And don\'t forget to check project for updates</string>
+
+    <string name="github">https://github.com/greenfrvr/rubber-loader</string>
+    <string name="email">greenfrvr.dev@gmail.com</string>
+
 </resources>

@@ -1,28 +1,31 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="@drawable/background_1"
-             android:orientation="vertical"
-             android:paddingLeft="64dp"
-             android:paddingRight="64dp"
-             tools:context=".MainActivity">
+<FrameLayout
+    style="@style/PageFrame"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_1">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="196dp"
-        android:layout_gravity="center"
-        android:background="@drawable/tile_bg">
+    <LinearLayout style="@style/TileContainer">
 
-        <com.greenfrvr.rubberloader.RubberLoaderView
-            android:id="@+id/loader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:loaderExtraColor="@color/extra_1"
-            app:loaderPrimeColor="@color/prime_1"/>
+        <TextView
+            style="@style/TileTitle"
+            android:text="@string/title_intro"/>
 
-    </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="196dp"
+            android:background="@drawable/tile_bg">
+
+            <com.greenfrvr.rubberloader.RubberLoaderView
+                android:id="@+id/loader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:loaderExtraColor="@color/extra_1"
+                app:loaderPrimeColor="@color/prime_1"/>
+
+        </FrameLayout>
+
+
+    </LinearLayout>
 
 </FrameLayout>

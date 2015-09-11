@@ -1,8 +1,38 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+    </style>
+
+    <style name="PageFrame">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingLeft">@dimen/page_padding</item>
+        <item name="android:paddingRight">@dimen/page_padding</item>
+    </style>
+
+    <style name="TileContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginBottom">32dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="TileTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">32dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/primary_light</item>
+        <item name="android:textSize">@dimen/page_title_text_size</item>
+    </style>
+
+    <style name="SizeName">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textColor">#6fff</item>
     </style>
 
 </resources>

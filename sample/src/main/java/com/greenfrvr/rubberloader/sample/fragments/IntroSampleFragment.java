@@ -14,7 +14,7 @@ import butterknife.Bind;
 /**
  * Created by greenfrvr
  */
-public class IntroFragment extends BaseFragment {
+public class IntroSampleFragment extends BaseFragment {
 
     protected @Bind(R.id.loader) RubberLoaderView loader;
 

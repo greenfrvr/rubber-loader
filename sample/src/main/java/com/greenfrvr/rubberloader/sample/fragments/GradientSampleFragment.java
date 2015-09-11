@@ -19,6 +19,7 @@ public class GradientSampleFragment extends BaseFragment {
     protected @Bind(R.id.loader1) RubberLoaderView loaderView1;
     protected @Bind(R.id.loader2) RubberLoaderView loaderView2;
     protected @Bind(R.id.loader3) RubberLoaderView loaderView3;
+    protected @Bind(R.id.loader4) RubberLoaderView loaderView4;
 
     @Nullable
     @Override
@@ -32,5 +33,6 @@ public class GradientSampleFragment extends BaseFragment {
         loaderView1.startLoading();
         loaderView2.startLoading();
         loaderView3.startLoading();
+        loaderView4.startLoading();
     }
 }
