@@ -7,18 +7,20 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.SparseArray;
 
 import com.greenfrvr.rubberloader.sample.fragments.IntroFragment;
+import com.greenfrvr.rubberloader.sample.fragments.SizesSampleFragment;
 
 /**
  * Created by greenfrvr
  */
 public class SamplesAdapter extends FragmentStatePagerAdapter {
 
-    public static final int COUNT = 1;
+    public static final int COUNT = 2;
 
     private static final SparseArray<String> fragments = new SparseArray<>(COUNT);
 
     static {
         fragments.put(0, IntroFragment.class.getName());
+        fragments.put(1, SizesSampleFragment.class.getName());
     }
 
     private Context context;

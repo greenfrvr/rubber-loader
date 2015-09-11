@@ -9,13 +9,20 @@
              android:paddingRight="64dp"
              tools:context=".MainActivity">
 
-    <com.greenfrvr.rubberloader.RubberLoaderView
-        android:id="@+id/loader"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="196dp"
         android:layout_gravity="center"
-        android:background="@drawable/tile_bg"
-        app:maxCircleColor="@color/max_color"
-        app:minCircleColor="@color/min_color"/>
+        android:background="@drawable/tile_bg">
+
+        <com.greenfrvr.rubberloader.RubberLoaderView
+            android:id="@+id/loader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:loaderExtraColor="@color/max_color"
+            app:loaderPrimeColor="@color/min_color"/>
+
+    </FrameLayout>
 
 </FrameLayout>
