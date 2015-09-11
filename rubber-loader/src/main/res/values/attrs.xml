@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="RubberLoaderView">
-        <attr name="minCircleRadius" format="dimension"/>
-        <attr name="maxCircleRadius" format="dimension"/>
-        <attr name="minCircleColor" format="color|reference"/>
-        <attr name="maxCircleColor" format="color|reference"/>
+        <attr name="loaderSize" format="enum">
+            <enum name="tiny" value="0"/>
+            <enum name="small" value="1"/>
+            <enum name="normal" value="2"/>
+            <enum name="medium" value="3"/>
+            <enum name="large" value="4"/>
+        </attr>
+        <attr name="loaderPrimeColor" format="color|reference"/>
+        <attr name="loaderExtraColor" format="color|reference"/>
     </declare-styleable>
 </resources>

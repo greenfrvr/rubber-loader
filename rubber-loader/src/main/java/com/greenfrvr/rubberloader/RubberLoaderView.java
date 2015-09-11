@@ -10,19 +10,44 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.support.annotation.IntDef;
 import android.util.AttributeSet;
+import android.util.SparseIntArray;
 import android.view.View;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * Created by greenfrvr
  */
 public class RubberLoaderView extends View {
 
+    @IntDef({TINY, SMALL, NORMAL, MEDIUM, LARGE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface LoaderSize {
+    }
+
+    public static final int TINY = 0;
+    public static final int SMALL = 1;
+    public static final int NORMAL = 2;
+    public static final int MEDIUM = 3;
+    public static final int LARGE = 4;
+
+    private static final SparseIntArray radiusMap = new SparseIntArray(4);
+
+    static {
+        radiusMap.put(TINY, R.dimen.tiny_radius);
+        radiusMap.put(SMALL, R.dimen.default_radius);
+        radiusMap.put(NORMAL, R.dimen.normal_radius);
+        radiusMap.put(MEDIUM, R.dimen.medium_radius);
+        radiusMap.put(LARGE, R.dimen.large_radius);
+    }
+
     private float radius;
     private float diff;
-
-    private int color1;
-    private int color2;
+    private int primeColor;
+    private int extraColor;
 
     private int centerX;
     private int centerY;
@@ -65,11 +90,12 @@ public class RubberLoaderView extends View {
     private void extractAttrs(AttributeSet attrs) {
         TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.RubberLoaderView, 0, 0);
         try {
-            radius = a.getDimension(R.styleable.RubberLoaderView_maxCircleRadius, getResources().getDimension(R.dimen.default_radius));
-            diff = a.getDimension(R.styleable.RubberLoaderView_minCircleRadius, getResources().getDimension(R.dimen.default_diff));
+            primeColor = a.getColor(R.styleable.RubberLoaderView_loaderPrimeColor, Color.BLACK);
+            extraColor = a.getColor(R.styleable.RubberLoaderView_loaderExtraColor, primeColor);
 
-            color1 = a.getColor(R.styleable.RubberLoaderView_minCircleColor, Color.BLACK);
-            color2 = a.getColor(R.styleable.RubberLoaderView_maxCircleColor, Color.BLACK);
+            int size = a.getInt(R.styleable.RubberLoaderView_loaderSize, SMALL);
+            radius = getResources().getDimension(radiusMap.get(size));
+            diff = radius / 6;
         } finally {
             a.recycle();
         }
@@ -78,7 +104,7 @@ public class RubberLoaderView extends View {
     private void prepare() {
         pathPaint.setAntiAlias(true);
         pathPaint.setStyle(Paint.Style.FILL);
-        pathPaint.setColor(color2);
+        pathPaint.setColor(extraColor);
 
         pathPaint.setDither(true);
         pathPaint.setStrokeJoin(Paint.Join.ROUND);
@@ -88,13 +114,16 @@ public class RubberLoaderView extends View {
     }
 
     private void prepareGradient() {
-        gradient = new LinearGradient(leftRect.centerX(), 0, rightRect.centerX(), 0, color1, color2, Shader.TileMode.CLAMP);
+        gradient = new LinearGradient(leftRect.centerX(), 0, rightRect.centerX(), 0, primeColor, extraColor, Shader.TileMode.CLAMP);
         pathPaint.setShader(gradient);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width = MeasureSpec.makeMeasureSpec((int) (4 * radius), MeasureSpec.EXACTLY) + getPaddingLeft() + getPaddingRight();
+        int height = MeasureSpec.makeMeasureSpec((int) (2 * radius), MeasureSpec.EXACTLY) + getPaddingTop() + getPaddingBottom();
+        super.onMeasure(width, height);
+
         evaluateCenter();
         evaluateCoors();
         prepare();
@@ -106,7 +135,7 @@ public class RubberLoaderView extends View {
         super.onDraw(canvas);
         evaluateCoors();
         updatePaint();
-        draw2Quads(canvas);
+        drawLoader(canvas);
     }
 
     private void evaluateCenter() {
@@ -131,7 +160,7 @@ public class RubberLoaderView extends View {
         rightRect.offset(centerX, centerY);
     }
 
-    private void draw2Quads(Canvas canvas) {
+    private void drawLoader(Canvas canvas) {
         path.rewind();
 
         path.addCircle(leftRect.centerX(), leftRect.centerY(), leftRect.width() / 2, Path.Direction.CW);
