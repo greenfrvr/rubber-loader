@@ -1,39 +1,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@drawable/background"
-              android:orientation="vertical"
-              android:paddingLeft="64dp"
-              android:paddingRight="64dp"
-              tools:context=".MainActivity">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".MainActivity">
 
-    <!--<com.greenfrvr.rubberloader.RubberLoaderView-->
-    <!--android:id="@+id/loader1"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_weight="1"-->
-    <!--android:background="#494c54"-->
-    <!--app:maxCircleColor="@color/pink"-->
-    <!--app:minCircleColor="@color/indigo"/>-->
-
-    <!--<com.greenfrvr.rubberloader.RubberLoaderView-->
-    <!--android:id="@+id/loader2"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_weight="1"-->
-    <!--android:background="#494c54"-->
-    <!--app:maxCircleColor="@color/lime"-->
-    <!--app:minCircleColor="@color/teal"/>-->
-
-    <com.greenfrvr.rubberloader.RubberLoaderView
-        android:id="@+id/loader"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
-        android:layout_height="196dp"
-        android:layout_gravity="center"
-        android:background="@drawable/tile_bg"
-        app:maxCircleColor="@color/max_color"
-        app:minCircleColor="@color/min_color"/>
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
