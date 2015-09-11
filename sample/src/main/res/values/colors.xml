@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="min_color">#16ffeb</color>
-    <color name="max_color">#11ffc6</color>
+    <color name="prime_1">#16ffeb</color>
+    <color name="extra_1">#11ffc6</color>
 
-    <color name="indigo">#3f51b5</color>
-    <color name="pink">#ff4081</color>
+    <color name="prime_2">#3f51b5</color>
+    <color name="extra_2">#673AB7</color>
 
-    <color name="lime">#CDDC39</color>
-    <color name="teal">#66BB6A</color>
+    <color name="prime_3">#FFC107</color>
+    <color name="extra_3">#FFEB3B</color>
 
 </resources>

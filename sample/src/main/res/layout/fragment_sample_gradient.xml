@@ -3,7 +3,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:background="@drawable/background_2"
+             android:background="@drawable/background_1"
              android:orientation="vertical"
              android:paddingLeft="56dp"
              android:paddingRight="56dp"
@@ -38,7 +38,7 @@
                 android:layout_marginBottom="16dp"
                 app:loaderExtraColor="@color/extra_1"
                 app:loaderPrimeColor="@color/prime_1"
-                app:loaderSize="tiny"/>
+                app:loaderSize="small"/>
 
         </LinearLayout>
 
@@ -61,8 +61,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:loaderExtraColor="@color/extra_1"
-                app:loaderPrimeColor="@color/prime_1"/>
+                app:loaderExtraColor="@color/extra_2"
+                app:loaderPrimeColor="@color/prime_2"
+                app:loaderSize="tiny"/>
 
         </LinearLayout>
 
@@ -85,35 +86,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:loaderExtraColor="@color/extra_1"
-                app:loaderPrimeColor="@color/prime_1"
+                app:loaderExtraColor="@color/extra_3"
+                app:loaderPrimeColor="@color/prime_3"
                 app:loaderSize="normal"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="8dp"
-                android:text="Medium"
-                android:textColor="#6fff"/>
-
-            <com.greenfrvr.rubberloader.RubberLoaderView
-                android:id="@+id/loader4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:loaderExtraColor="@color/extra_1"
-                app:loaderPrimeColor="@color/prime_1"
-                app:loaderSize="medium"/>
-
         </LinearLayout>
     </LinearLayout>
 
