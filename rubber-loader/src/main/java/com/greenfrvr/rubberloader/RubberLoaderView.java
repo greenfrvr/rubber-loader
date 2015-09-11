@@ -44,6 +44,7 @@ public class RubberLoaderView extends View {
         radiusMap.put(LARGE, R.dimen.large_radius);
     }
 
+    private int size = SMALL;
     private float radius;
     private float diff;
     private int primeColor;
@@ -93,15 +94,16 @@ public class RubberLoaderView extends View {
             primeColor = a.getColor(R.styleable.RubberLoaderView_loaderPrimeColor, Color.BLACK);
             extraColor = a.getColor(R.styleable.RubberLoaderView_loaderExtraColor, primeColor);
 
-            int size = a.getInt(R.styleable.RubberLoaderView_loaderSize, SMALL);
-            radius = getResources().getDimension(radiusMap.get(size));
-            diff = radius / 6;
+            size = a.getInt(R.styleable.RubberLoaderView_loaderSize, SMALL);
         } finally {
             a.recycle();
         }
     }
 
     private void prepare() {
+        radius = getResources().getDimension(radiusMap.get(size));
+        diff = radius / 6;
+
         pathPaint.setAntiAlias(true);
         pathPaint.setStyle(Paint.Style.FILL);
         pathPaint.setColor(extraColor);
@@ -126,13 +128,12 @@ public class RubberLoaderView extends View {
 
         evaluateCenter();
         evaluateCoors();
-        prepare();
-        prepareGradient();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        evaluateCenter();
         evaluateCoors();
         updatePaint();
         drawLoader(canvas);
@@ -182,6 +183,9 @@ public class RubberLoaderView extends View {
     }
 
     private void updatePaint() {
+        if (gradient == null) {
+            prepareGradient();
+        }
         gradMatrix.reset();
         gradMatrix.setTranslate(2.5f * radius * (1 - Math.abs(t)) * (1 - Math.abs(t)), 0);
         gradMatrix.postRotate(Math.signum(t) > 0 ? 0 : 180, centerX, centerY);
