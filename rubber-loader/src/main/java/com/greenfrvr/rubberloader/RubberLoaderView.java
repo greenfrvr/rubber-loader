@@ -85,11 +85,23 @@ public class RubberLoaderView extends View {
         prepareMetrics();
     }
 
+    /**
+     * Sets the size of a loader. Only pre-defined values are available.
+     * Available flags: <i>EXTRA_TINY, TINY, SMALL (default), NORMAL, MEDIUM, LARGE</i>
+     *
+     * @param size Size flag representing one of pre-defined size values.
+     */
     public void setSize(@LoaderSize int size) {
         this.size = size;
         prepareMetrics();
     }
 
+    /**
+     * Sets loader prime and extra color.
+     *
+     * @param primeColor Prime color value
+     * @param extraColor Extra color value
+     */
     public void setPalette(@ColorInt int primeColor, @ColorInt int extraColor) {
         this.primeColor = primeColor;
         this.extraColor = extraColor == 0 ? primeColor : extraColor;
@@ -97,6 +109,12 @@ public class RubberLoaderView extends View {
         gradient = null;
     }
 
+    /**
+     * Sets loader prime and extra color.
+     *
+     * @param primeId Prime color resId
+     * @param extraId Extra color resId
+     */
     public void setPaletteRes(@ColorRes int primeId, @ColorRes int extraId) {
         this.primeColor = getResources().getColor(primeId);
         this.extraColor = getResources().getColor(extraId);
@@ -104,22 +122,47 @@ public class RubberLoaderView extends View {
         gradient = null;
     }
 
+
+    /**
+     * Sets animation interpolator.
+     *
+     * @param interpolator Interpolator to be used by loader animation
+     */
     public void setInterpolator(TimeInterpolator interpolator) {
         coordinator.setInterpolator(interpolator);
     }
 
+    /**
+     * Sets the length of the animation. Default duration is 700 millis.
+     *
+     * @param duration Length of the animation, in milliseconds.
+     */
     public void setDuration(long duration) {
         coordinator.setDuration(duration);
     }
 
-    public void setDelay(long delay){
+    /**
+     * The amount of time to delay animation start.
+     *
+     * @param delay Delay, in millis
+     */
+    public void setDelay(long delay) {
         coordinator.setStartDelay(delay);
     }
 
+
+    /**
+     * Starts loader animation
+     */
     public void startLoading() {
         coordinator.start();
     }
 
+    /**
+     * Starts loader animation with defined delay
+     *
+     * @param delay Delay, in millis
+     */
     public void startLoading(long delay) {
         coordinator.setStartDelay(delay);
         coordinator.start();
