@@ -28,9 +28,10 @@
         <item name="android:textSize">@dimen/page_title_text_size</item>
     </style>
 
-    <style name="SizeName">
+    <style name="Subtitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:paddingBottom">8dp</item>
         <item name="android:textColor">#6fff</item>
     </style>

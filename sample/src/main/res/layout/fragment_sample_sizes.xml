@@ -26,7 +26,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/SizeName"
+                    style="@style/Subtitle"
                     android:text="@string/size_tiny"/>
 
                 <com.greenfrvr.rubberloader.RubberLoaderView
@@ -48,7 +48,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/SizeName"
+                    style="@style/Subtitle"
                     android:text="@string/size_small"/>
 
                 <com.greenfrvr.rubberloader.RubberLoaderView
@@ -69,7 +69,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/SizeName"
+                    style="@style/Subtitle"
                     android:text="@string/size_normal"/>
 
                 <com.greenfrvr.rubberloader.RubberLoaderView
@@ -91,7 +91,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/SizeName"
+                    style="@style/Subtitle"
                     android:text="@string/size_medium"/>
 
                 <com.greenfrvr.rubberloader.RubberLoaderView

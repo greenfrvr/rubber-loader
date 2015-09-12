@@ -24,8 +24,6 @@
                 app:loaderPrimeColor="@color/prime_1"/>
 
         </FrameLayout>
-
-
     </LinearLayout>
 
 </FrameLayout>
