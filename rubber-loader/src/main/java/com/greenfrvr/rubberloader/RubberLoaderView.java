@@ -1,5 +1,6 @@
 package com.greenfrvr.rubberloader;
 
+import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -10,6 +11,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
 import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.util.SparseIntArray;
@@ -23,20 +26,22 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class RubberLoaderView extends View {
 
-    @IntDef({TINY, SMALL, NORMAL, MEDIUM, LARGE})
+    @IntDef({EXTRA_TINY, TINY, SMALL, NORMAL, MEDIUM, LARGE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface LoaderSize {
     }
 
-    public static final int TINY = 0;
-    public static final int SMALL = 1;
-    public static final int NORMAL = 2;
-    public static final int MEDIUM = 3;
-    public static final int LARGE = 4;
+    public static final int EXTRA_TINY = 0;
+    public static final int TINY = 1;
+    public static final int SMALL = 2;
+    public static final int NORMAL = 3;
+    public static final int MEDIUM = 4;
+    public static final int LARGE = 5;
 
     private static final SparseIntArray radiusMap = new SparseIntArray(4);
 
     static {
+        radiusMap.put(EXTRA_TINY, R.dimen.extra_tiny_radius);
         radiusMap.put(TINY, R.dimen.tiny_radius);
         radiusMap.put(SMALL, R.dimen.default_radius);
         radiusMap.put(NORMAL, R.dimen.normal_radius);
@@ -76,7 +81,39 @@ public class RubberLoaderView extends View {
     public RubberLoaderView(Context context, AttributeSet attrs) {
         super(context, attrs);
         extractAttrs(attrs);
-        prepare();
+        preparePaint();
+        prepareMetrics();
+    }
+
+    public void setSize(@LoaderSize int size) {
+        this.size = size;
+        prepareMetrics();
+    }
+
+    public void setPalette(@ColorInt int primeColor, @ColorInt int extraColor) {
+        this.primeColor = primeColor;
+        this.extraColor = extraColor == 0 ? primeColor : extraColor;
+        pathPaint.setColor(primeColor);
+        gradient = null;
+    }
+
+    public void setPaletteRes(@ColorRes int primeId, @ColorRes int extraId) {
+        this.primeColor = getResources().getColor(primeId);
+        this.extraColor = getResources().getColor(extraId);
+        pathPaint.setColor(primeColor);
+        gradient = null;
+    }
+
+    public void setInterpolator(TimeInterpolator interpolator) {
+        coordinator.setInterpolator(interpolator);
+    }
+
+    public void setDuration(long duration) {
+        coordinator.setDuration(duration);
+    }
+
+    public void setDelay(long delay){
+        coordinator.setStartDelay(delay);
     }
 
     public void startLoading() {
@@ -100,19 +137,21 @@ public class RubberLoaderView extends View {
         }
     }
 
-    private void prepare() {
-        radius = getResources().getDimension(radiusMap.get(size));
-        diff = radius / 6;
-
+    private void preparePaint() {
         pathPaint.setAntiAlias(true);
         pathPaint.setStyle(Paint.Style.FILL);
-        pathPaint.setColor(extraColor);
+        pathPaint.setColor(primeColor);
 
         pathPaint.setDither(true);
         pathPaint.setStrokeJoin(Paint.Join.ROUND);
         pathPaint.setStrokeCap(Paint.Cap.ROUND);
 
         coordinator = new Coordinator(this);
+    }
+
+    private void prepareMetrics() {
+        radius = getResources().getDimension(radiusMap.get(size));
+        diff = radius / 6;
     }
 
     private void prepareGradient() {
