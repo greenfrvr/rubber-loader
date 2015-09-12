@@ -24,3 +24,30 @@ dependencies {
     compile 'com.jakewharton.timber:timber:3.1.0'
     testCompile 'junit:junit:4.12'
 }
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'rubber-loader'
+
+    publishedGroupId = 'com.github.greenfrvr'
+    libraryName = 'RubberLoaderView'
+    artifact = 'rubber-loader'
+
+    libraryDescription = 'Android loader widget with rubber shape and color animations.'
+
+    siteUrl = 'https://bintray.com/greenfrvr/maven/rubber-loader'
+    gitUrl = 'https://github.com/greenfrvr/rubber-loader.git'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'greenfrvr'
+    developerName = 'Artsiom Grintsevich'
+    developerEmail = 'greenfrvr.dev@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: 'install.gradle'
+apply from: 'bintray.gradle'
