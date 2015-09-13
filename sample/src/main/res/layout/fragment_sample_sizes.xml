@@ -18,92 +18,63 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <LinearLayout
+
+            <TextView
+                style="@style/Subtitle"
+                android:text="@string/size_extra_tiny"/>
+
+            <com.greenfrvr.rubberloader.RubberLoaderView
+                android:id="@+id/loader0"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:layout_marginBottom="16dp"
+                app:loaderExtraColor="@color/extra_1"
+                app:loaderPrimeColor="@color/prime_1"
+                app:loaderSize="extra_tiny"/>
 
-                <TextView
-                    style="@style/Subtitle"
-                    android:text="@string/size_extra_tiny"/>
+            <TextView
+                style="@style/Subtitle"
+                android:text="@string/size_tiny"/>
 
-                <com.greenfrvr.rubberloader.RubberLoaderView
-                    android:id="@+id/loader0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:loaderExtraColor="@color/extra_1"
-                    app:loaderPrimeColor="@color/prime_1"
-                    app:loaderSize="extra_tiny"/>
-
-                <TextView
-                    style="@style/Subtitle"
-                    android:text="@string/size_tiny"/>
-
-                <com.greenfrvr.rubberloader.RubberLoaderView
-                    android:id="@+id/loader1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:loaderExtraColor="@color/extra_1"
-                    app:loaderPrimeColor="@color/prime_1"
-                    app:loaderSize="tiny"/>
-
-            </LinearLayout>
-
-            <LinearLayout
+            <com.greenfrvr.rubberloader.RubberLoaderView
+                android:id="@+id/loader1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:layout_marginBottom="16dp"
+                app:loaderExtraColor="@color/extra_1"
+                app:loaderPrimeColor="@color/prime_1"
+                app:loaderSize="tiny"/>
 
-                <TextView
-                    style="@style/Subtitle"
-                    android:text="@string/size_small"/>
+            <TextView
+                style="@style/Subtitle"
+                android:text="@string/size_small"/>
 
-                <com.greenfrvr.rubberloader.RubberLoaderView
-                    android:id="@+id/loader2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:loaderExtraColor="@color/extra_1"
-                    app:loaderPrimeColor="@color/prime_1"/>
-
-            </LinearLayout>
-
-            <LinearLayout
+            <com.greenfrvr.rubberloader.RubberLoaderView
+                android:id="@+id/loader2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:layout_marginBottom="16dp"
+                app:loaderExtraColor="@color/extra_1"
+                app:loaderPrimeColor="@color/prime_1"
+                app:loaderSize="small"/>
 
-                <TextView
-                    style="@style/Subtitle"
-                    android:text="@string/size_normal"/>
+            <TextView
+                style="@style/Subtitle"
+                android:text="@string/size_normal"/>
 
-                <com.greenfrvr.rubberloader.RubberLoaderView
-                    android:id="@+id/loader3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:loaderExtraColor="@color/extra_1"
-                    app:loaderPrimeColor="@color/prime_1"
-                    app:loaderSize="normal"/>
-
-            </LinearLayout>
-
-            <LinearLayout
+            <com.greenfrvr.rubberloader.RubberLoaderView
+                android:id="@+id/loader3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:layout_marginBottom="8dp"
+                app:loaderExtraColor="@color/extra_1"
+                app:loaderPrimeColor="@color/prime_1"
+                app:loaderSize="normal"/>
 
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
