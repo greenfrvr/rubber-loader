@@ -16,10 +16,10 @@ import butterknife.Bind;
  */
 public class SizesSampleFragment extends BaseFragment {
 
+    protected @Bind(R.id.loader0) RubberLoaderView loaderView0;
     protected @Bind(R.id.loader1) RubberLoaderView loaderView1;
     protected @Bind(R.id.loader2) RubberLoaderView loaderView2;
     protected @Bind(R.id.loader3) RubberLoaderView loaderView3;
-    protected @Bind(R.id.loader4) RubberLoaderView loaderView4;
 
     @Nullable
     @Override
@@ -30,9 +30,9 @@ public class SizesSampleFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loaderView0.startLoading();
         loaderView1.startLoading();
         loaderView2.startLoading();
         loaderView3.startLoading();
-        loaderView4.startLoading();
     }
 }

@@ -27,6 +27,19 @@
 
                 <TextView
                     style="@style/Subtitle"
+                    android:text="@string/size_extra_tiny"/>
+
+                <com.greenfrvr.rubberloader.RubberLoaderView
+                    android:id="@+id/loader0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:loaderExtraColor="@color/extra_1"
+                    app:loaderPrimeColor="@color/prime_1"
+                    app:loaderSize="extra_tiny"/>
+
+                <TextView
+                    style="@style/Subtitle"
                     android:text="@string/size_tiny"/>
 
                 <com.greenfrvr.rubberloader.RubberLoaderView
@@ -76,7 +89,7 @@
                     android:id="@+id/loader3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="8dp"
                     app:loaderExtraColor="@color/extra_1"
                     app:loaderPrimeColor="@color/prime_1"
                     app:loaderSize="normal"/>
@@ -89,19 +102,6 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
-
-                <TextView
-                    style="@style/Subtitle"
-                    android:text="@string/size_medium"/>
-
-                <com.greenfrvr.rubberloader.RubberLoaderView
-                    android:id="@+id/loader4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:loaderExtraColor="@color/extra_1"
-                    app:loaderPrimeColor="@color/prime_1"
-                    app:loaderSize="medium"/>
 
             </LinearLayout>
         </LinearLayout>
