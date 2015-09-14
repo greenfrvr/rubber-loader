@@ -1,5 +1,6 @@
 package com.greenfrvr.rubberloader;
 
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 /**
@@ -7,11 +8,11 @@ import android.graphics.RectF;
  */
 class Calculator {
 
-    public static void evaluateBezierEndpoints(RectF c1, RectF c2, float px, float py, double[][] coors, boolean top) {
+    public static void evaluateBezierEndpoints(RectF c1, RectF c2, float px, float py, PointF[] coors, boolean top) {
         evaluateBezierEndpoints(c1.centerX(), c1.centerY(), c1.width() / 2, c2.centerX(), c2.centerY(), c2.width() / 2, px, py, coors, top);
     }
 
-    public static void evaluateBezierEndpoints(float cx1, float cy1, float r1, float cx2, float cy2, float r2, float px, float py, double[][] coors, boolean top) {
+    public static void evaluateBezierEndpoints(float cx1, float cy1, float r1, float cx2, float cy2, float r2, float px, float py, PointF[] coors, boolean top) {
         double[] lines1 = tangentLines(cx1, cy1, r1, px, py);
         double[] lines2 = tangentLines(cx2, cy2, r2, px, py);
 
@@ -25,45 +26,44 @@ class Calculator {
 
         if (top) {
             if (pts[0][1] < pts[1][1]) {
-                coors[0][0] = pts[0][0];
-                coors[0][1] = pts[0][1];
+                coors[0].x = (float) pts[0][0];
+                coors[0].y = (float) pts[0][1];
             } else {
-                coors[0][0] = pts[1][0];
-                coors[0][1] = pts[1][1];
+                coors[0].x = (float) pts[1][0];
+                coors[0].y = (float) pts[1][1];
             }
 
             if (pts[2][1] < pts[3][1]) {
-                coors[1][0] = pts[2][0];
-                coors[1][1] = pts[2][1];
+                coors[1].x = (float) pts[2][0];
+                coors[1].y = (float) pts[2][1];
             } else {
-                coors[1][0] = pts[3][0];
-                coors[1][1] = pts[3][1];
+                coors[1].x = (float) pts[3][0];
+                coors[1].y = (float) pts[3][1];
             }
         } else {
             if (pts[0][1] > pts[1][1]) {
-                coors[0][0] = pts[0][0];
-                coors[0][1] = pts[0][1];
+                coors[0].x = (float) pts[0][0];
+                coors[0].y = (float) pts[0][1];
             } else {
-                coors[0][0] = pts[1][0];
-                coors[0][1] = pts[1][1];
+                coors[0].x = (float) pts[1][0];
+                coors[0].y = (float) pts[1][1];
             }
 
             if (pts[2][1] > pts[3][1]) {
-                coors[1][0] = pts[2][0];
-                coors[1][1] = pts[2][1];
+                coors[1].x = (float) pts[2][0];
+                coors[1].y = (float) pts[2][1];
             } else {
-                coors[1][0] = pts[3][0];
-                coors[1][1] = pts[3][1];
+                coors[1].x = (float) pts[3][0];
+                coors[1].y = (float) pts[3][1];
             }
         }
     }
 
-
-    public static void circlesIntersection(RectF c1, RectF c2, double[][] coors) {
+    public static void circlesIntersection(RectF c1, RectF c2, PointF[] coors) {
         circlesIntersection(c1.centerX(), c1.centerY(), c1.width() / 2, c2.centerX(), c2.centerY(), c2.width() / 2, coors);
     }
 
-    public static void circlesIntersection(float cx1, float cy1, float r1, float cx2, float cy2, float r2, double[][] coors) {
+    public static void circlesIntersection(float cx1, float cy1, float r1, float cx2, float cy2, float r2, PointF[] coors) {
         double[] res = null;
 
         float x = cx2 - cx1;
@@ -82,15 +82,15 @@ class Calculator {
             }
 
             if (res[1] < res[3]) {
-                coors[0][0] = res[0];
-                coors[0][1] = res[1];
-                coors[1][0] = res[2];
-                coors[1][1] = res[3];
+                coors[0].x = (float) res[0];
+                coors[0].y = (float) res[1];
+                coors[1].x = (float) res[2];
+                coors[1].y = (float) res[3];
             } else {
-                coors[0][0] = res[2];
-                coors[0][1] = res[3];
-                coors[1][0] = res[0];
-                coors[1][1] = res[1];
+                coors[0].x = (float) res[2];
+                coors[0].y = (float) res[3];
+                coors[1].x = (float) res[0];
+                coors[1].y = (float) res[1];
             }
         }
     }

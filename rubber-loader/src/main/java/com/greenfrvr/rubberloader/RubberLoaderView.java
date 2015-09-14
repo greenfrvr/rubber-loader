@@ -9,7 +9,6 @@ import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.RectF;
 import android.graphics.Shader;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
@@ -55,24 +54,13 @@ public class RubberLoaderView extends View {
     private int primeColor;
     private int extraColor;
 
-    private int centerX;
-    private int centerY;
-
     private Path path = new Path();
-    private RectF leftRect = new RectF();
-    private RectF rightRect = new RectF();
     private Paint pathPaint = new Paint();
 
     private Shader gradient;
     private Matrix gradMatrix = new Matrix();
 
-    private Float t = -1f;
-
-    private Coordinator coordinator;
-
-    private double[][] intersection = new double[2][2];
-    private double[][] topBezier = new double[2][2];
-    private double[][] botBezier = new double[2][2];
+    private Coordinator coors;
 
     public RubberLoaderView(Context context) {
         super(context);
@@ -129,7 +117,7 @@ public class RubberLoaderView extends View {
      * @param interpolator Interpolator to be used by loader animation
      */
     public void setInterpolator(TimeInterpolator interpolator) {
-        coordinator.setInterpolator(interpolator);
+        coors.setInterpolator(interpolator);
     }
 
     /**
@@ -138,7 +126,7 @@ public class RubberLoaderView extends View {
      * @param duration Length of the animation, in milliseconds.
      */
     public void setDuration(long duration) {
-        coordinator.setDuration(duration);
+        coors.setDuration(duration);
     }
 
     /**
@@ -147,7 +135,7 @@ public class RubberLoaderView extends View {
      * @param delay Delay, in millis
      */
     public void setDelay(long delay) {
-        coordinator.setStartDelay(delay);
+        coors.setStartDelay(delay);
     }
 
 
@@ -155,7 +143,7 @@ public class RubberLoaderView extends View {
      * Starts loader animation
      */
     public void startLoading() {
-        coordinator.start();
+        coors.start();
     }
 
     /**
@@ -164,8 +152,16 @@ public class RubberLoaderView extends View {
      * @param delay Delay, in millis
      */
     public void startLoading(long delay) {
-        coordinator.setStartDelay(delay);
-        coordinator.start();
+        coors.setStartDelay(delay);
+        coors.start();
+    }
+
+    protected float getRadius() {
+        return radius;
+    }
+
+    protected float getDiff() {
+        return diff;
     }
 
     private void extractAttrs(AttributeSet attrs) {
@@ -189,7 +185,7 @@ public class RubberLoaderView extends View {
         pathPaint.setStrokeJoin(Paint.Join.ROUND);
         pathPaint.setStrokeCap(Paint.Cap.ROUND);
 
-        coordinator = new Coordinator(this);
+        coors = new Coordinator(this);
     }
 
     private void prepareMetrics() {
@@ -198,7 +194,8 @@ public class RubberLoaderView extends View {
     }
 
     private void prepareGradient() {
-        gradient = new LinearGradient(leftRect.centerX(), 0, rightRect.centerX(), 0, primeColor, extraColor, Shader.TileMode.CLAMP);
+        gradient = new LinearGradient(coors.leftCircle().centerX(), 0, coors.rightCircle().centerX(), 0,
+                primeColor, extraColor, Shader.TileMode.CLAMP);
         pathPaint.setShader(gradient);
     }
 
@@ -207,59 +204,30 @@ public class RubberLoaderView extends View {
         int width = MeasureSpec.makeMeasureSpec((int) (4 * radius), MeasureSpec.EXACTLY) + getPaddingLeft() + getPaddingRight();
         int height = MeasureSpec.makeMeasureSpec((int) (2 * radius), MeasureSpec.EXACTLY) + getPaddingTop() + getPaddingBottom();
         super.onMeasure(width, height);
-
-        evaluateCenter();
-        evaluateCoors();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        evaluateCenter();
-        evaluateCoors();
         updatePaint();
         drawLoader(canvas);
-    }
-
-    private void evaluateCenter() {
-        centerX = getWidth() / 2;
-        centerY = getHeight() / 2;
-    }
-
-    private void evaluateCoors() {
-        float value1 = Math.signum(t) < 0 ? Math.abs(t) : 0;
-        float value2 = Math.signum(t) > 0 ? Math.abs(t) : 0;
-
-        leftRect.set(
-                -Math.abs(t) * 4 * diff - (radius - diff * value1), -(radius - diff * value1),
-                -Math.abs(t) * 4 * diff + (radius - diff * value1), radius - diff * value1
-        );
-        rightRect.set(
-                Math.abs(t) * 4 * diff - (radius - diff * value2), -(radius - diff * value2),
-                Math.abs(t) * 4 * diff + (radius - diff * value2), radius - diff * value2
-        );
-
-        leftRect.offset(centerX, centerY);
-        rightRect.offset(centerX, centerY);
     }
 
     private void drawLoader(Canvas canvas) {
         path.rewind();
 
-        path.addCircle(leftRect.centerX(), leftRect.centerY(), leftRect.width() / 2, Path.Direction.CW);
-        path.addCircle(rightRect.centerX(), rightRect.centerY(), rightRect.width() / 2, Path.Direction.CW);
+        path.addCircle(coors.leftCircle().centerX(), coors.leftCircle().centerY(), coors.leftCircle().width() / 2, Path.Direction.CW);
+        path.addCircle(coors.rightCircle().centerX(), coors.rightCircle().centerY(), coors.rightCircle().width() / 2, Path.Direction.CW);
 
-        Calculator.circlesIntersection(leftRect, rightRect, intersection);
-        Calculator.evaluateBezierEndpoints(leftRect, rightRect, (float) intersection[0][0], (float) intersection[0][1] - .7f * diff * Math.abs(t), topBezier, true);
-        Calculator.evaluateBezierEndpoints(leftRect, rightRect, (float) intersection[1][0], (float) intersection[1][1] + .7f * diff * Math.abs(t), botBezier, false);
+        path.moveTo(coors.topLeft().x, coors.topLeft().y);
 
-        path.moveTo((float) topBezier[0][0], (float) topBezier[0][1]);
-        path.quadTo((float) intersection[0][0], (float) intersection[0][1] - .7f * diff * Math.abs(t), (float) topBezier[1][0], (float) topBezier[1][1]);
+        path.quadTo(coors.topInter().x, coors.topInter().y - .7f * diff * coors.abs(),
+                coors.topRight().x, coors.topRight().y);
+        path.lineTo(coors.botRight().x, coors.botRight().y);
 
-        path.lineTo((float) botBezier[1][0], (float) botBezier[1][1]);
-        path.quadTo((float) intersection[1][0], (float) intersection[1][1] + .7f * diff * Math.abs(t), (float) botBezier[0][0], (float) botBezier[0][1]);
-
-        path.lineTo((float) topBezier[0][0], (float) topBezier[0][1]);
+        path.quadTo(coors.botInter().x, coors.botInter().y + .7f * diff * coors.abs(),
+                coors.botLeft().x, coors.botLeft().y);
+        path.lineTo(coors.topLeft().x, coors.topLeft().y);
 
         canvas.drawPath(path, pathPaint);
     }
@@ -269,14 +237,9 @@ public class RubberLoaderView extends View {
             prepareGradient();
         }
         gradMatrix.reset();
-        gradMatrix.setTranslate(2.5f * radius * (1 - Math.abs(t)) * (1 - Math.abs(t)), 0);
-        gradMatrix.postRotate(Math.signum(t) > 0 ? 0 : 180, centerX, centerY);
+        gradMatrix.setTranslate(2.5f * radius * (1 - coors.abs()) * (1 - coors.abs()), 0);
+        gradMatrix.postRotate(coors.sign() > 0 ? 0 : 180, getWidth() / 2, getHeight() / 2);
 
         gradient.setLocalMatrix(gradMatrix);
-    }
-
-    protected void invalidate(Float value) {
-        t = value;
-        invalidate();
     }
 }
