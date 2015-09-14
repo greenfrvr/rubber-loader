@@ -1,3 +1,5 @@
+[![Android Gems](http://www.android-gems.com/badge/greenfrvr/rubber-loader.svg?branch=master)](http://www.android-gems.com/lib/greenfrvr/rubber-loader)
+
 # RubberLoaderView
 
 Android indeterminate loader widget with rubber shape and color animations.
