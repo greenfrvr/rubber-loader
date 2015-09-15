@@ -1,5 +1,6 @@
 # RubberLoaderView
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RubberLoaderView-green.svg?style=flat)](https://android-arsenal.com/details/1/2489)
 [![Android Gems](http://www.android-gems.com/badge/greenfrvr/rubber-loader.svg?branch=master)](http://www.android-gems.com/lib/greenfrvr/rubber-loader)
 
 Android indeterminate loader widget with rubber shape and color animations.
