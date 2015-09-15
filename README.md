@@ -4,6 +4,11 @@
 [![Android Gems](http://www.android-gems.com/badge/greenfrvr/rubber-loader.svg?branch=master)](http://www.android-gems.com/lib/greenfrvr/rubber-loader)
 
 Android indeterminate loader widget with rubber shape and color animations.
+Inspired by<a href="https://dribbble.com/shots/2000305-Loading-dark">
+              <img alt="Dribbble" width="25" height="25" align="top"
+                   src="https://d13yacurqjgara.cloudfront.net/assets/dribbble-ball-dnld-9887db49a749236ed542c4c553c4f27f.png" />
+            </a>
+    
 
 Click picture below to watch it in action.
 
