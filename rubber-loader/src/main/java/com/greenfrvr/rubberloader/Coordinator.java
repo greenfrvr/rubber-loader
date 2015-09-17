@@ -4,6 +4,8 @@ import android.animation.ValueAnimator;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import com.greenfrvr.rubberloader.calculation.BezierEndpoints;
+import com.greenfrvr.rubberloader.calculation.Intersection;
 import com.greenfrvr.rubberloader.interpolator.PulseInterpolator;
 
 /**
@@ -18,9 +20,16 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     private RectF leftRect = new RectF();
     private RectF rightRect = new RectF();
 
-    private PointF[] intersection = new PointF[]{new PointF(), new PointF()};
-    private PointF[] topBezier = new PointF[]{new PointF(), new PointF()};
-    private PointF[] botBezier = new PointF[]{new PointF(), new PointF()};
+    private PointF[] interPts = new PointF[]{new PointF(), new PointF()};
+    private PointF[] topPts = new PointF[]{new PointF(), new PointF()};
+    private PointF[] botPts = new PointF[]{new PointF(), new PointF()};
+
+    private RectF[] topTangents = new RectF[]{new RectF(), new RectF()};
+    private RectF[] bottomTangents = new RectF[]{new RectF(), new RectF()};
+
+    private Intersection intersection;
+    private BezierEndpoints topEndpoints;
+    private BezierEndpoints botEndpoints;
 
     private Float t = -1f;
 
@@ -32,6 +41,9 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
         addUpdateListener(this);
         setInterpolator(new PulseInterpolator());
         this.view = view;
+        this.intersection = Intersection.newInstance();
+        this.topEndpoints = BezierEndpoints.top();
+        this.botEndpoints = BezierEndpoints.bot();
     }
 
     private void evaluateCoors() {
@@ -56,9 +68,9 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     }
 
     private void evaluateBezierPoints() {
-        Calculator.circlesIntersection(leftRect, rightRect, intersection);
-        Calculator.evaluateBezierEndpoints(leftRect, rightRect, intersection[0].x, intersection[0].y - .7f * view.getDiff() * Math.abs(t), topBezier, true);
-        Calculator.evaluateBezierEndpoints(leftRect, rightRect, intersection[1].x, intersection[1].y + .7f * view.getDiff() * Math.abs(t), botBezier, false);
+        intersection.circlesIntersection(leftRect, rightRect, interPts);
+        topEndpoints.evaluateBezierEndpoints(leftRect, rightRect, interPts[0].x, interPts[0].y - .7f * view.getDiff() * Math.abs(t), topPts, topTangents);
+        botEndpoints.evaluateBezierEndpoints(leftRect, rightRect, interPts[1].x, interPts[1].y + .7f * view.getDiff() * Math.abs(t), botPts, bottomTangents);
     }
 
     public RectF leftCircle() {
@@ -70,27 +82,27 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     }
 
     public PointF topLeft() {
-        return topBezier[0];
+        return topPts[0];
     }
 
     public PointF topRight() {
-        return topBezier[1];
+        return topPts[1];
     }
 
     public PointF botRight() {
-        return botBezier[1];
+        return botPts[1];
     }
 
     public PointF botLeft() {
-        return botBezier[0];
+        return botPts[0];
     }
 
     public PointF topInter() {
-        return intersection[0];
+        return interPts[0];
     }
 
     public PointF botInter() {
-        return intersection[1];
+        return interPts[1];
     }
 
     public float sign() {
