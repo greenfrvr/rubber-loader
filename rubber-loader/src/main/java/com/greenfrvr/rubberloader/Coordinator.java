@@ -6,6 +6,7 @@ import android.graphics.RectF;
 
 import com.greenfrvr.rubberloader.calculation.BezierEndpoints;
 import com.greenfrvr.rubberloader.calculation.Intersection;
+import com.greenfrvr.rubberloader.internal.BezierQ;
 import com.greenfrvr.rubberloader.interpolator.PulseInterpolator;
 
 /**
@@ -20,12 +21,8 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     private RectF leftRect = new RectF();
     private RectF rightRect = new RectF();
 
-    private PointF[] interPts = new PointF[]{new PointF(), new PointF()};
-    private PointF[] topPts = new PointF[]{new PointF(), new PointF()};
-    private PointF[] botPts = new PointF[]{new PointF(), new PointF()};
-
-    private RectF[] topTangents = new RectF[]{new RectF(), new RectF()};
-    private RectF[] bottomTangents = new RectF[]{new RectF(), new RectF()};
+    private BezierQ topBezier = new BezierQ();
+    private BezierQ botBezier = new BezierQ();
 
     private Intersection intersection;
     private BezierEndpoints topEndpoints;
@@ -68,9 +65,10 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     }
 
     private void evaluateBezierPoints() {
-        intersection.circlesIntersection(leftRect, rightRect, interPts);
-        topEndpoints.evaluateBezierEndpoints(leftRect, rightRect, interPts[0].x, interPts[0].y - .7f * view.getDiff() * Math.abs(t), topPts, topTangents);
-        botEndpoints.evaluateBezierEndpoints(leftRect, rightRect, interPts[1].x, interPts[1].y + .7f * view.getDiff() * Math.abs(t), botPts, bottomTangents);
+        intersection.circlesIntersection(leftRect, rightRect, topBezier.getMiddle(), botBezier.getMiddle());
+
+        topEndpoints.evaluateBezierEndpoints(leftRect, rightRect, topBezier.middleOffset(0, -.7f * view.getDiff() * Math.abs(t)));
+        botEndpoints.evaluateBezierEndpoints(leftRect, rightRect, botBezier.middleOffset(0, .7f * view.getDiff() * Math.abs(t)));
     }
 
     public RectF leftCircle() {
@@ -82,27 +80,27 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     }
 
     public PointF topLeft() {
-        return topPts[0];
+        return topBezier.getStart();
     }
 
     public PointF topRight() {
-        return topPts[1];
+        return topBezier.getEnd();
     }
 
     public PointF botRight() {
-        return botPts[1];
+        return botBezier.getStart();
     }
 
     public PointF botLeft() {
-        return botPts[0];
+        return botBezier.getEnd();
     }
 
-    public PointF topInter() {
-        return interPts[0];
+    public PointF topMiddle() {
+        return topBezier.getMiddle();
     }
 
-    public PointF botInter() {
-        return interPts[1];
+    public PointF botMiddle() {
+        return botBezier.getMiddle();
     }
 
     public float sign() {

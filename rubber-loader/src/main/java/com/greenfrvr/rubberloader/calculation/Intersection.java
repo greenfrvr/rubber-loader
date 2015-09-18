@@ -18,26 +18,26 @@ public class Intersection {
         roots = new PointF();
     }
 
-    public void circlesIntersection(RectF c1, RectF c2, PointF[] coors) {
-        circlesIntersection(c1.centerX(), c1.centerY(), c1.width() / 2, c2.centerX(), c2.centerY(), c2.width() / 2, coors);
+    public void circlesIntersection(RectF c1, RectF c2, PointF i1, PointF i2) {
+        circlesIntersection(c1.centerX(), c1.centerY(), c1.width() / 2, c2.centerX(), c2.centerY(), c2.width() / 2, i1, i2);
     }
 
-    public void circlesIntersection(float cx1, float cy1, float r1, float cx2, float cy2, float r2, PointF[] coors) {
+    public void circlesIntersection(float cx1, float cy1, float r1, float cx2, float cy2, float r2, PointF i1, PointF i2) {
         float x = cx2 - cx1;
         float y = cy2 - cy1;
         float q = (r1 * r1 - r2 * r2 + x * x + y * y) / 2;
 
         if (x != 0) {
-            intersection(x, y, r1, q, true, coors);
+            intersection(x, y, r1, q, true, i1, i2);
         } else if (y != 0) {
-            intersection(y, x, r1, q, false, coors);
+            intersection(y, x, r1, q, false, i1, i2);
         }
 
-        coors[0].offset(cx1, cy1);
-        coors[1].offset(cx1, cy1);
+        i1.offset(cx1, cy1);
+        i2.offset(cx1, cy1);
     }
 
-    private void intersection(float x, float y, float r, float q, boolean order, PointF[] coors) {
+    private void intersection(float x, float y, float r, float q, boolean order, PointF i1, PointF i2) {
         float a = x * x + y * y;
         float b = -2 * q * y;
         float c = q * q - r * r * x * x;
@@ -49,27 +49,19 @@ public class Intersection {
 
         if (order) {
             if (roots.x < roots.y) {
-                coors[0].x = v1;
-                coors[0].y = roots.x;
-                coors[1].x = v2;
-                coors[1].y = roots.y;
+                i1.set(v1, roots.x);
+                i2.set(v2, roots.y);
             } else {
-                coors[0].x = v2;
-                coors[0].y = roots.y;
-                coors[1].x = v1;
-                coors[1].y = roots.x;
+                i1.set(v2, roots.y);
+                i2.set(v1, roots.x);
             }
         } else {
             if (roots.x < roots.y) {
-                coors[0].x = roots.x;
-                coors[0].y = v1;
-                coors[1].x = roots.y;
-                coors[1].y = v2;
+                i1.set(roots.x, v1);
+                i2.set(roots.y, v2);
             } else {
-                coors[0].x = roots.y;
-                coors[0].y = v2;
-                coors[1].x = roots.x;
-                coors[1].y = v1;
+                i1.set(roots.y, v2);
+                i2.set(roots.x, v1);
             }
         }
     }

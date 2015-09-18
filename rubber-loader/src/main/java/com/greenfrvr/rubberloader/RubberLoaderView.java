@@ -221,12 +221,10 @@ public class RubberLoaderView extends View {
 
         path.moveTo(coors.topLeft().x, coors.topLeft().y);
 
-        path.quadTo(coors.topInter().x, coors.topInter().y - .7f * diff * coors.abs(),
-                coors.topRight().x, coors.topRight().y);
+        path.quadTo(coors.topMiddle().x, coors.topMiddle().y, coors.topRight().x, coors.topRight().y);
         path.lineTo(coors.botRight().x, coors.botRight().y);
 
-        path.quadTo(coors.botInter().x, coors.botInter().y + .7f * diff * coors.abs(),
-                coors.botLeft().x, coors.botLeft().y);
+        path.quadTo(coors.botMiddle().x, coors.botMiddle().y, coors.botLeft().x, coors.botLeft().y);
         path.lineTo(coors.topLeft().x, coors.topLeft().y);
 
         canvas.drawPath(path, pathPaint);
