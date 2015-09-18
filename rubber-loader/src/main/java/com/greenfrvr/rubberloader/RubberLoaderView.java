@@ -194,8 +194,7 @@ public class RubberLoaderView extends View {
     }
 
     private void prepareGradient() {
-        gradient = new LinearGradient(coors.leftCircle().centerX(), 0, coors.rightCircle().centerX(), 0,
-                primeColor, extraColor, Shader.TileMode.CLAMP);
+        gradient = new LinearGradient(coors.leftCircle().getX(), 0, coors.rightCircle().getY(), 0, primeColor, extraColor, Shader.TileMode.CLAMP);
         pathPaint.setShader(gradient);
     }
 
@@ -216,8 +215,8 @@ public class RubberLoaderView extends View {
     private void drawLoader(Canvas canvas) {
         path.rewind();
 
-        path.addCircle(coors.leftCircle().centerX(), coors.leftCircle().centerY(), coors.leftCircle().width() / 2, Path.Direction.CW);
-        path.addCircle(coors.rightCircle().centerX(), coors.rightCircle().centerY(), coors.rightCircle().width() / 2, Path.Direction.CW);
+        path.addCircle(coors.leftCircle().getX(), coors.leftCircle().getY(), coors.leftCircle().getR(), Path.Direction.CW);
+        path.addCircle(coors.rightCircle().getX(), coors.rightCircle().getY(), coors.rightCircle().getR(), Path.Direction.CW);
 
         path.moveTo(coors.topLeft().x, coors.topLeft().y);
 

@@ -1,9 +1,9 @@
 package com.greenfrvr.rubberloader.calculation;
 
 import android.graphics.PointF;
-import android.graphics.RectF;
 
 import com.greenfrvr.rubberloader.internal.BezierQ;
+import com.greenfrvr.rubberloader.internal.Circle;
 import com.greenfrvr.rubberloader.internal.CircleTangents;
 
 /**
@@ -31,8 +31,8 @@ public class BezierEndpoints {
         this.top = top;
     }
 
-    public void evaluateBezierEndpoints(RectF c1, RectF c2, BezierQ bezierQ) {
-        evaluateBezierEndpoints(c1.centerX(), c1.centerY(), c1.width() / 2, c2.centerX(), c2.centerY(), c2.width() / 2,
+    public void evaluateBezierEndpoints(Circle c1, Circle c2, BezierQ bezierQ) {
+        evaluateBezierEndpoints(c1.getX(), c1.getY(), c1.getR(), c2.getX(), c2.getY(), c2.getR(),
                 bezierQ.getMiddle(), top ? bezierQ.getStart() : bezierQ.getEnd(), top ? bezierQ.getEnd() : bezierQ.getStart());
     }
 

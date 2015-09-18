@@ -2,11 +2,11 @@ package com.greenfrvr.rubberloader;
 
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
-import android.graphics.RectF;
 
 import com.greenfrvr.rubberloader.calculation.BezierEndpoints;
 import com.greenfrvr.rubberloader.calculation.Intersection;
 import com.greenfrvr.rubberloader.internal.BezierQ;
+import com.greenfrvr.rubberloader.internal.Circle;
 import com.greenfrvr.rubberloader.interpolator.PulseInterpolator;
 
 /**
@@ -18,9 +18,8 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
 
     private RubberLoaderView view;
 
-    private RectF leftRect = new RectF();
-    private RectF rightRect = new RectF();
-
+    private Circle leftCircle;
+    private Circle rightCircle;
     private BezierQ topBezier = new BezierQ();
     private BezierQ botBezier = new BezierQ();
 
@@ -31,52 +30,23 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     private float t = -1f;
 
     public Coordinator(RubberLoaderView view) {
-        setFloatValues(-1, 1);
-        setDuration(DEFAULT_DURATION);
-        setRepeatMode(REVERSE);
-        setRepeatCount(INFINITE);
-        addUpdateListener(this);
-        setInterpolator(new PulseInterpolator());
+        init();
         this.view = view;
         this.intersection = Intersection.newInstance();
         this.topEndpoints = BezierEndpoints.top();
         this.botEndpoints = BezierEndpoints.bot();
+        this.leftCircle = new Circle();
+        this.rightCircle = new Circle();
+        this.topBezier = new BezierQ();
+        this.botBezier = new BezierQ();
     }
 
-    private void evaluateCoors() {
-        float value1 = Math.signum(t) < 0 ? Math.abs(t) : 0;
-        float value2 = Math.signum(t) > 0 ? Math.abs(t) : 0;
-
-        leftRect.set(
-                -Math.abs(t) * 4 * view.getDiff() - (view.getRadius() - view.getDiff() * value1),
-                -(view.getRadius() - view.getDiff() * value1),
-                -Math.abs(t) * 4 * view.getDiff() + (view.getRadius() - view.getDiff() * value1),
-                view.getRadius() - view.getDiff() * value1
-        );
-        rightRect.set(
-                Math.abs(t) * 4 * view.getDiff() - (view.getRadius() - view.getDiff() * value2),
-                -(view.getRadius() - view.getDiff() * value2),
-                Math.abs(t) * 4 * view.getDiff() + (view.getRadius() - view.getDiff() * value2),
-                view.getRadius() - view.getDiff() * value2
-        );
-
-        leftRect.offset(view.getWidth() / 2, view.getHeight() / 2);
-        rightRect.offset(view.getWidth() / 2, view.getHeight() / 2);
+    public Circle leftCircle() {
+        return leftCircle;
     }
 
-    private void evaluateBezierPoints() {
-        intersection.circlesIntersection(leftRect, rightRect, topBezier.getMiddle(), botBezier.getMiddle());
-
-        topEndpoints.evaluateBezierEndpoints(leftRect, rightRect, topBezier.middleOffset(0, -.7f * view.getDiff() * Math.abs(t)));
-        botEndpoints.evaluateBezierEndpoints(leftRect, rightRect, botBezier.middleOffset(0, .7f * view.getDiff() * Math.abs(t)));
-    }
-
-    public RectF leftCircle() {
-        return leftRect;
-    }
-
-    public RectF rightCircle() {
-        return rightRect;
+    public Circle rightCircle() {
+        return rightCircle;
     }
 
     public PointF topLeft() {
@@ -111,11 +81,38 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
         return Math.abs(t);
     }
 
+    private void init(){
+        setFloatValues(-1, 1);
+        setDuration(DEFAULT_DURATION);
+        setRepeatMode(REVERSE);
+        setRepeatCount(INFINITE);
+        addUpdateListener(this);
+        setInterpolator(new PulseInterpolator());
+    }
+
+    private void evaluateCircleCoors() {
+        float value1 = Math.signum(t) < 0 ? Math.abs(t) : 0;
+        float value2 = Math.signum(t) > 0 ? Math.abs(t) : 0;
+
+        leftCircle.set(-Math.abs(t) * 4 * view.getDiff(), 0, -view.getDiff() * value1);
+        rightCircle.set(Math.abs(t) * 4 * view.getDiff(), 0, -view.getDiff() * value2);
+
+        leftCircle.offset(view.getWidth() / 2, view.getHeight() / 2, view.getRadius());
+        rightCircle.offset(view.getWidth() / 2, view.getHeight() / 2, view.getRadius());
+    }
+
+    private void evaluateBezierCoors() {
+        intersection.circlesIntersection(leftCircle, rightCircle, topBezier.getMiddle(), botBezier.getMiddle());
+
+        topEndpoints.evaluateBezierEndpoints(leftCircle, rightCircle, topBezier.middleOffset(0, -.7f * view.getDiff() * Math.abs(t)));
+        botEndpoints.evaluateBezierEndpoints(leftCircle, rightCircle, botBezier.middleOffset(0, .7f * view.getDiff() * Math.abs(t)));
+    }
+
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
         t = 2f * animation.getAnimatedFraction() - 1f;
-        evaluateCoors();
-        evaluateBezierPoints();
+        evaluateCircleCoors();
+        evaluateBezierCoors();
         view.invalidate();
     }
 }
