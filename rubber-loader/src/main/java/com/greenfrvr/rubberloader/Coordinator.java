@@ -31,7 +31,7 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     private BezierEndpoints topEndpoints;
     private BezierEndpoints botEndpoints;
 
-    private Float t = -1f;
+    private float t = -1f;
 
     public Coordinator(RubberLoaderView view) {
         setFloatValues(-1, 1);
@@ -115,7 +115,7 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        t = (Float) animation.getAnimatedValue();
+        t = 2f * animation.getAnimatedFraction() - 1f;
         evaluateCoors();
         evaluateBezierPoints();
         view.invalidate();
