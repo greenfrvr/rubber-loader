@@ -13,7 +13,7 @@ public class BezierEndpoints {
 
     private CircleTangents tangents;
     private PointF roots;
-    float[][] pts;
+    private PointF[] pts;
     boolean top;
 
     public static BezierEndpoints top() {
@@ -27,7 +27,7 @@ public class BezierEndpoints {
     private BezierEndpoints(boolean top) {
         this.roots = new PointF();
         this.tangents = new CircleTangents();
-        this.pts = new float[4][2];
+        this.pts = new PointF[]{new PointF(), new PointF(), new PointF(), new PointF()};
         this.top = top;
     }
 
@@ -47,40 +47,21 @@ public class BezierEndpoints {
         circleLineIntersection(cx2, cy2, r2, tangents.getK2(), tangents.getL2(), pts[3]);
 
         if (top) {
-            if (pts[0][1] < pts[1][1]) {
-                p1.set(pts[0][0], pts[0][1]);
-            } else {
-                p1.set(pts[1][0], pts[1][1]);
-            }
-
-            if (pts[2][1] < pts[3][1]) {
-                p2.set(pts[2][0], pts[2][1]);
-            } else {
-                p2.set(pts[3][0], pts[3][1]);
-            }
+            p1.set(pts[0].y < pts[1].y ? pts[0] : pts[1]);
+            p2.set(pts[2].y < pts[3].y ? pts[2] : pts[3]);
         } else {
-            if (pts[0][1] > pts[1][1]) {
-                p1.set(pts[0][0], pts[0][1]);
-            } else {
-                p1.set(pts[1][0], pts[1][1]);
-            }
-
-            if (pts[2][1] > pts[3][1]) {
-                p2.set(pts[2][0], pts[2][1]);
-            } else {
-                p2.set(pts[3][0], pts[3][1]);
-            }
+            p1.set(pts[0].y > pts[1].y ? pts[0] : pts[1]);
+            p2.set(pts[2].y > pts[3].y ? pts[2] : pts[3]);
         }
     }
 
-    private void circleLineIntersection(float cx, float cy, float r, float k, float l, float[] pts) {
+    private void circleLineIntersection(float cx, float cy, float r, float k, float l, PointF p) {
         float a = k * k + 1;
         float b = 2 * (l * k - cx - cy * k);
         float c = l * l + cx * cx + cy * cy - r * r - 2 * l * cy;
 
         quadraticRoots(a, b, c);
-        pts[0] = roots.x;
-        pts[1] = k * roots.x + l;
+        p.set(roots.x, k * roots.x + l);
     }
 
     private void tangentLines(float cx, float cy, float r, float px, float py) {
@@ -98,16 +79,13 @@ public class BezierEndpoints {
         float aa = a + a;
 
         if (d < 0.0) {
-            roots.x = -b / aa;
-            roots.y = -b / aa;
+            roots.set(-b / aa, -b / aa);
         } else if (b < 0.0) {
             float re = (float) ((-b + Math.sqrt(d)) / aa);
-            roots.x = re;
-            roots.y = c / (a * re);
+            roots.set(re, c / (a * re));
         } else {
             float re = (float) ((-b - Math.sqrt(d)) / aa);
-            roots.y = re;
-            roots.x = c / (a * re);
+            roots.set(c / (a * re), re);
         }
     }
 

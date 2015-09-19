@@ -49,21 +49,11 @@ public class Intersection {
         float v2 = (q - roots.y * y) / x;
 
         if (order) {
-            if (roots.x < roots.y) {
-                i1.set(v1, roots.x);
-                i2.set(v2, roots.y);
-            } else {
-                i1.set(v2, roots.y);
-                i2.set(v1, roots.x);
-            }
+            i1.set(v1, roots.x);
+            i2.set(v2, roots.y);
         } else {
-            if (roots.x < roots.y) {
-                i1.set(roots.x, v1);
-                i2.set(roots.y, v2);
-            } else {
-                i1.set(roots.y, v2);
-                i2.set(roots.x, v1);
-            }
+            i1.set(roots.x, v1);
+            i2.set(roots.y, v2);
         }
     }
 
@@ -72,16 +62,19 @@ public class Intersection {
         float aa = a + a;
 
         if (d < 0.0) {
-            roots.x = -b / aa;
-            roots.y = -b / aa;
+            roots.set(-b / aa, -b / aa);
         } else if (b < 0.0) {
             float re = (float) ((-b + Math.sqrt(d)) / aa);
-            roots.x = re;
-            roots.y = c / (a * re);
+            if (re < c / (a * re))
+                roots.set(re, c / (a * re));
+            else
+                roots.set(c / (a * re), re);
         } else {
             float re = (float) ((-b - Math.sqrt(d)) / aa);
-            roots.y = re;
-            roots.x = c / (a * re);
+            if (c / (a * re) < re)
+                roots.set(c / (a * re), re);
+            else
+                roots.set(re, c / (a * re));
         }
     }
 
