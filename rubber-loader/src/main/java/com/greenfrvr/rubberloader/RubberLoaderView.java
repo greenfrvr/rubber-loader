@@ -37,6 +37,15 @@ public class RubberLoaderView extends View {
     public static final int MEDIUM = 4;
     public static final int LARGE = 5;
 
+    @IntDef({RIPPLE_NONE, RIPPLE_SIMPLE, RIPPLE_EXTENDED})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface RippleMode {
+    }
+
+    public static final int RIPPLE_NONE = 0;
+    public static final int RIPPLE_SIMPLE = 1;
+    public static final int RIPPLE_EXTENDED = 2;
+
     private static final SparseIntArray radiusMap = new SparseIntArray(4);
 
     static {
@@ -49,13 +58,16 @@ public class RubberLoaderView extends View {
     }
 
     private int size = SMALL;
+    private int ripple = RIPPLE_NONE;
     private float radius;
     private float diff;
     private int primeColor;
     private int extraColor;
+    private int rippleColor;
 
     private Path path = new Path();
     private Paint pathPaint = new Paint();
+    private Paint ripplePaint = new Paint();
 
     private Shader gradient;
     private Matrix gradMatrix = new Matrix();
@@ -169,8 +181,10 @@ public class RubberLoaderView extends View {
         try {
             primeColor = a.getColor(R.styleable.RubberLoaderView_loaderPrimeColor, Color.BLACK);
             extraColor = a.getColor(R.styleable.RubberLoaderView_loaderExtraColor, primeColor);
+            rippleColor = a.getColor(R.styleable.RubberLoaderView_rippleColor, Color.WHITE);
 
             size = a.getInt(R.styleable.RubberLoaderView_loaderSize, SMALL);
+            ripple = a.getInt(R.styleable.RubberLoaderView_rippleMode, RIPPLE_NONE);
         } finally {
             a.recycle();
         }
@@ -178,12 +192,15 @@ public class RubberLoaderView extends View {
 
     private void preparePaint() {
         pathPaint.setAntiAlias(true);
-        pathPaint.setStyle(Paint.Style.FILL);
-        pathPaint.setColor(primeColor);
-
         pathPaint.setDither(true);
+        pathPaint.setStyle(Paint.Style.FILL);
         pathPaint.setStrokeJoin(Paint.Join.ROUND);
         pathPaint.setStrokeCap(Paint.Cap.ROUND);
+        pathPaint.setColor(primeColor);
+
+        ripplePaint.setAntiAlias(true);
+        ripplePaint.setStyle(Paint.Style.FILL);
+        ripplePaint.setColor(rippleColor);
 
         coors = new Coordinator(this);
     }
@@ -200,16 +217,32 @@ public class RubberLoaderView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = MeasureSpec.makeMeasureSpec((int) (4 * radius), MeasureSpec.EXACTLY) + getPaddingLeft() + getPaddingRight();
-        int height = MeasureSpec.makeMeasureSpec((int) (2 * radius), MeasureSpec.EXACTLY) + getPaddingTop() + getPaddingBottom();
+        int width = MeasureSpec.makeMeasureSpec(widthValue(), MeasureSpec.EXACTLY) + getPaddingLeft() + getPaddingRight();
+        int height = MeasureSpec.makeMeasureSpec(heightValue(), MeasureSpec.EXACTLY) + getPaddingTop() + getPaddingBottom();
         super.onMeasure(width, height);
+    }
+
+    private int widthValue() {
+        return (int) (ripple != RIPPLE_EXTENDED ? (4 * radius) : (6 * radius));
+    }
+
+    private int heightValue() {
+        return (int) (ripple == RIPPLE_NONE ? (2 * radius) : (ripple == RIPPLE_SIMPLE ? (4 * radius) : (6 * radius)));
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         updatePaint();
+        drawRipple(canvas);
         drawLoader(canvas);
+    }
+
+    private void drawRipple(Canvas canvas) {
+        if (ripple != RIPPLE_NONE && coors.drawRipple()) {
+            ripplePaint.setAlpha((int) (100 * (1 - coors.getAnimatedFraction())));
+            canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 * coors.getAnimatedFraction(), ripplePaint);
+        }
     }
 
     private void drawLoader(Canvas canvas) {

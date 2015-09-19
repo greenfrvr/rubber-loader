@@ -1,5 +1,6 @@
 package com.greenfrvr.rubberloader;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
 
@@ -12,7 +13,7 @@ import com.greenfrvr.rubberloader.interpolator.PulseInterpolator;
 /**
  * Created by greenfrvr
  */
-public class Coordinator extends ValueAnimator implements ValueAnimator.AnimatorUpdateListener {
+public class Coordinator extends ValueAnimator implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
 
     public static final long DEFAULT_DURATION = 700;
 
@@ -28,6 +29,7 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     private BezierEndpoints botEndpoints;
 
     private float t = -1f;
+    private boolean isBack = false;
 
     public Coordinator(RubberLoaderView view) {
         init();
@@ -81,12 +83,17 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
         return Math.abs(t);
     }
 
-    private void init(){
+    public boolean drawRipple() {
+        return isBack;
+    }
+
+    private void init() {
         setFloatValues(-1, 1);
         setDuration(DEFAULT_DURATION);
         setRepeatMode(REVERSE);
         setRepeatCount(INFINITE);
         addUpdateListener(this);
+        addListener(this);
         setInterpolator(new PulseInterpolator());
     }
 
@@ -114,5 +121,22 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
         evaluateCircleCoors();
         evaluateBezierCoors();
         view.invalidate();
+    }
+
+    @Override
+    public void onAnimationRepeat(Animator animation) {
+        isBack = sign() < 0 && !isBack;
+    }
+
+    @Override
+    public void onAnimationStart(Animator animation) {
+    }
+
+    @Override
+    public void onAnimationEnd(Animator animation) {
+    }
+
+    @Override
+    public void onAnimationCancel(Animator animation) {
     }
 }
