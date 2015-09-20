@@ -1,0 +1,76 @@
+<FrameLayout
+    style="@style/PageFrame"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_1">
+
+    <LinearLayout style="@style/TileContainer">
+
+        <TextView
+            style="@style/TileTitle"
+            android:text="@string/title_ripple"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tile_bg"
+            android:padding="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Subtitle"
+                    android:text="@string/ripple_simple"/>
+
+                <com.greenfrvr.rubberloader.RubberLoaderView
+                    android:id="@+id/loader1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:loaderExtraColor="@color/extra_1"
+                    app:loaderPrimeColor="@color/prime_1"
+                    app:loaderSize="tiny"
+                    app:rippleColor="@color/extra_1"
+                    app:rippleMode="normal"/>
+
+                <TextView
+                    style="@style/Subtitle"
+                    android:text="@string/ripple_cyclic"/>
+
+                <com.greenfrvr.rubberloader.RubberLoaderView
+                    android:id="@+id/loader2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    app:loaderExtraColor="@color/extra_1"
+                    app:loaderPrimeColor="@color/prime_1"
+                    app:loaderSize="tiny"
+                    app:rippleMode="cycle"/>
+
+                <TextView
+                    style="@style/Subtitle"
+                    android:text="@string/ripple_reverse"/>
+
+
+                <com.greenfrvr.rubberloader.RubberLoaderView
+                    android:id="@+id/loader3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    app:loaderExtraColor="@color/extra_1"
+                    app:loaderPrimeColor="@color/prime_1"
+                    app:loaderSize="tiny"
+                    app:rippleColor="@color/prime_1"
+                    app:rippleMode="reverse"/>
+
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+</FrameLayout>

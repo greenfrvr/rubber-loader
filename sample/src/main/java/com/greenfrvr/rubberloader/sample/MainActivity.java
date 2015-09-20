@@ -24,13 +24,13 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
 
-        indicator.setText("1/" + viewPager.getAdapter().getCount());
+        indicator.setText(String.format("1/%d", viewPager.getAdapter().getCount()));
         indicator.setTypeface(Typeface.MONOSPACE);
     }
 
     @Override
     public void onPageSelected(int position) {
-        indicator.setText((position + 1) + "/" + viewPager.getAdapter().getCount());
+        indicator.setText(String.format("%1$d/%2$d", position + 1, viewPager.getAdapter().getCount()));
     }
 
     @Override

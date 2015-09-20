@@ -5,6 +5,7 @@
     <string name="title_sizes">Choose your size</string>
     <string name="title_gradient">Match your style</string>
     <string name="title_interpolator">Adjust motion sense</string>
+    <string name="title_ripple">Ripple effect</string>
     <string name="title_contact">Sources and feedback</string>
 
     <string name="size_extra_tiny">Extra tiny</string>
@@ -16,6 +17,10 @@
     <string name="inter_pulse">Pulse</string>
     <string name="inter_linear">Linear</string>
     <string name="inter_pulse_inverse">Pulse inverse</string>
+
+    <string name="ripple_simple">Simple</string>
+    <string name="ripple_cyclic">Cyclic</string>
+    <string name="ripple_reverse">Reverse</string>
 
     <string name="contact">Contact greenfrvr.dev@gmail.com for any ideas or suggestions</string>
     <string name="sources">All sources available on GitHub</string>
