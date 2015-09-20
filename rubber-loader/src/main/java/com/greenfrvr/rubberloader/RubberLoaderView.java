@@ -37,14 +37,15 @@ public class RubberLoaderView extends View {
     public static final int MEDIUM = 4;
     public static final int LARGE = 5;
 
-    @IntDef({RIPPLE_NONE, RIPPLE_SIMPLE, RIPPLE_EXTENDED})
+    @IntDef({RIPPLE_NONE, RIPPLE_NORMAL, RIPPLE_REVERSE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface RippleMode {
     }
 
     public static final int RIPPLE_NONE = 0;
-    public static final int RIPPLE_SIMPLE = 1;
-    public static final int RIPPLE_EXTENDED = 2;
+    public static final int RIPPLE_NORMAL = 1;
+    public static final int RIPPLE_REVERSE = 2;
+    public static final int RIPPLE_CYCLE = 3;
 
     private static final SparseIntArray radiusMap = new SparseIntArray(4);
 
@@ -223,11 +224,11 @@ public class RubberLoaderView extends View {
     }
 
     private int widthValue() {
-        return (int) (ripple != RIPPLE_EXTENDED ? (4 * radius) : (6 * radius));
+        return (int) (ripple == RIPPLE_NONE ? (4 * radius) : (6 * radius));
     }
 
     private int heightValue() {
-        return (int) (ripple == RIPPLE_NONE ? (2 * radius) : (ripple == RIPPLE_SIMPLE ? (4 * radius) : (6 * radius)));
+        return (int) (ripple == RIPPLE_NONE ? (2 * radius) : (6 * radius));
     }
 
     @Override
@@ -239,9 +240,15 @@ public class RubberLoaderView extends View {
     }
 
     private void drawRipple(Canvas canvas) {
-        if (ripple != RIPPLE_NONE && coors.drawRipple()) {
+        if (ripple != RIPPLE_NONE) {
             ripplePaint.setAlpha((int) (100 * (1 - coors.getAnimatedFraction())));
-            canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 * coors.getAnimatedFraction(), ripplePaint);
+            if (ripple == RIPPLE_NORMAL && coors.ripple()) {
+                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 * coors.getAnimatedFraction(), ripplePaint);
+            } else if (ripple == RIPPLE_REVERSE && coors.rippleReverse()) {
+                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 * coors.getAnimatedFraction(), ripplePaint);
+            } else if (ripple == RIPPLE_CYCLE && (coors.ripple() || coors.rippleReverse())) {
+                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 * coors.getAnimatedFraction(), ripplePaint);
+            }
         }
     }
 

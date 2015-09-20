@@ -29,7 +29,8 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     private BezierEndpoints botEndpoints;
 
     private float t = -1f;
-    private boolean isBack = false;
+    private boolean isForward = false;
+    private boolean isBackward = false;
 
     public Coordinator(RubberLoaderView view) {
         init();
@@ -83,8 +84,12 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
         return Math.abs(t);
     }
 
-    public boolean drawRipple() {
-        return isBack;
+    public boolean ripple() {
+        return isBackward;
+    }
+
+    public boolean rippleReverse() {
+        return isForward;
     }
 
     private void init() {
@@ -125,7 +130,8 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
 
     @Override
     public void onAnimationRepeat(Animator animation) {
-        isBack = sign() < 0 && !isBack;
+        isBackward = sign() < 0 && !isBackward;
+        isForward = sign() > 0 && !isForward;
     }
 
     @Override
