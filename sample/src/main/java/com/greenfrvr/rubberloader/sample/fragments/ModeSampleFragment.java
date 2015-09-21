@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.greenfrvr.rubberloader.RubberLoaderView;
+import com.greenfrvr.rubberloader.interpolator.PulseInverseInterpolator;
 import com.greenfrvr.rubberloader.sample.R;
 
 import butterknife.Bind;
@@ -29,6 +30,7 @@ public class ModeSampleFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loaderView1.startLoading();
+        loaderView2.setInterpolator(new PulseInverseInterpolator());
         loaderView2.startLoading();
     }
 }

@@ -37,7 +37,7 @@ ext {
     siteUrl = 'https://bintray.com/greenfrvr/maven/rubber-loader'
     gitUrl = 'https://github.com/greenfrvr/rubber-loader.git'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.1.0'
 
     developerId = 'greenfrvr'
     developerName = 'Artsiom Grintsevich'

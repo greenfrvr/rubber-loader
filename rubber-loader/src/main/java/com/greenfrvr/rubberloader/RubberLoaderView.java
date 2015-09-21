@@ -269,7 +269,7 @@ public class RubberLoaderView extends View {
     }
 
     private void prepareGradient() {
-        gradient = new LinearGradient(coors.leftCircle().getX(), 0, coors.rightCircle().getX(), 0, primeColor, extraColor, Shader.TileMode.CLAMP);
+        gradient = new LinearGradient(getMeasuredWidth() / 2 - 4 * diff, 0, getMeasuredWidth() / 2 + 4 * diff, 0, primeColor, extraColor, Shader.TileMode.CLAMP);
         pathPaint.setShader(gradient);
     }
 
