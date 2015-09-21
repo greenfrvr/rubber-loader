@@ -29,7 +29,7 @@ Easily reference the library in your Android projects using this dependency in y
 
 ```Gradle 
 dependencies {
-    compile 'com.github.greenfrvr:rubber-loader:1.0.0@aar'
+    compile 'com.github.greenfrvr:rubber-loader:1.1.0@aar'
 }
 ```
 Library available on both jCenter and Maven Central, but in case of any issues (library can't be resolved) use Bintray repo.
@@ -48,18 +48,30 @@ This will reference Bintray's Maven repository that contains hashtags widget dir
 ## Customizing
 All attributes can be defined in layout .xml file or programmatically. Below is a list of available attributes.
 
+##### Loader modes
+
+Different loader modes has different animation behaviour. Default mode is **normal**.
+
+```xml
+	<attr name="loaderMode" format="enum">
+            <enum name="normal" value="0"/>
+            <enum name="equal" value="1"/>
+            <enum name="centered" value="2"/>
+        </attr>
+```
+
 ##### Size
 
-Currently 6 pre-defined sizes are available.
+Currently 6 pre-defined sizes are available. Loader with ripple need more space.
 
-| Value  | Sizes  |
-| :------------ |:---------------:|
-| EXTRA_TINY     | 24dp * 12dp |
-| TINY      | 48dp * 24dp        |
-| SMALL (default) | 72dp * 36dp |
-| NORMAL | 96dp * 48dp |
-| MEDIUM  | 120dp * 60dp |
-| LARGE | 144dp * 72dp |
+| Value  | Sizes  | Sizes with ripples |
+| :------------ |:---------------:|:------:|
+| EXTRA_TINY     | 27dp * 12dp | 36dp * 36dp |
+| TINY      | 54dp * 24dp        | 72dp * 72dp |
+| SMALL (default) | 81dp * 36dp | 108dp * 108dp |
+| NORMAL | 108dp * 48dp | 144dp * 144dp |
+| MEDIUM  | 135dp * 60dp | 180dp * 180dp |
+| LARGE | 162dp * 72dp | 216dp * 216dp |
 
 
 ```xml
@@ -80,8 +92,22 @@ Define 2 colors wich will form smooth color transition.
 ```xml
     <attr name="loaderPrimeColor" format="color|reference"/>
     <attr name="loaderExtraColor" format="color|reference"/>
+    <attr name="rippleColor" format="color|reference"/>
 ```
 If you set only `loaderPrimeColor`, its value will be set to `loaderExtraColor`, so loader will be filled with solid prime color. 
+
+##### Ripples
+
+Select `rippleMode` to add ripple animations effect. Default mode is `none`. Loaders with ripple will have bigger sizes than without them. 
+
+```xml
+	<attr name="rippleMode" format="enum">
+            <enum name="none" value="0"/>
+            <enum name="normal" value="1"/>
+            <enum name="reverse" value="2"/>
+            <enum name="cycle" value="3"/>
+        </attr>
+```
 
 ## Usage
 
