@@ -103,21 +103,40 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     }
 
     private void evaluateCircleCoors() {
-        float value1 = view.getMode() == RubberLoaderView.MODE_EQUAL ? abs() : (sign() < 0 ? abs() : 0);
-        float value2 = view.getMode() == RubberLoaderView.MODE_EQUAL ? abs() : (sign() > 0 ? abs() : 0);
+        leftCircle.set(-Math.abs(t) * 4 * view.getDiff(), 0, leftRadiusDiff());
+        rightCircle.set(Math.abs(t) * 4 * view.getDiff(), 0, rightRadiusDiff());
 
-        leftCircle.set(-Math.abs(t) * 4 * view.getDiff(), 0, -view.getDiff() * value1);
-        rightCircle.set(Math.abs(t) * 4 * view.getDiff(), 0, -view.getDiff() * value2);
+        leftCircle.offset(view.getWidth() / 2 + offsetX(), view.getHeight() / 2, view.getRadius());
+        rightCircle.offset(view.getWidth() / 2 + offsetX(), view.getHeight() / 2, view.getRadius());
+    }
 
-        leftCircle.offset(view.getWidth() / 2, view.getHeight() / 2, view.getRadius());
-        rightCircle.offset(view.getWidth() / 2, view.getHeight() / 2, view.getRadius());
+    private float leftRadiusDiff() {
+        if (view.getMode() == RubberLoaderView.MODE_EQUAL)
+            return -view.getDiff() * abs();
+        else
+            return -view.getDiff() * (sign() < 0 ? abs() : 0);
+    }
+
+    private float rightRadiusDiff() {
+        if (view.getMode() == RubberLoaderView.MODE_EQUAL)
+            return -view.getDiff() * abs();
+        else
+            return -view.getDiff() * (sign() > 0 ? abs() : 0);
+    }
+
+    private float offsetX() {
+        return view.getMode() != RubberLoaderView.MODE_CENTERED ? 0 : Math.abs(t) * 4 * view.getDiff() * sign();
     }
 
     private void evaluateBezierCoors() {
         intersection.circlesIntersection(leftCircle, rightCircle, topBezier.getMiddle(), botBezier.getMiddle());
 
-        topEndpoints.evaluateBezierEndpoints(leftCircle, rightCircle, topBezier.middleOffset(0, -.8f * view.getDiff() * Math.abs(t)));
-        botEndpoints.evaluateBezierEndpoints(leftCircle, rightCircle, botBezier.middleOffset(0, .8f * view.getDiff() * Math.abs(t)));
+        topEndpoints.evaluateBezierEndpoints(leftCircle, rightCircle, topBezier.middleOffset(0, -middleOffset()));
+        botEndpoints.evaluateBezierEndpoints(leftCircle, rightCircle, botBezier.middleOffset(0, middleOffset()));
+    }
+
+    private float middleOffset() {
+        return .8f * view.getDiff() * Math.abs(t);
     }
 
     @Override

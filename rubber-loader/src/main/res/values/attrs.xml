@@ -12,6 +12,7 @@
         <attr name="loaderMode" format="enum">
             <enum name="normal" value="0"/>
             <enum name="equal" value="1"/>
+            <enum name="centered" value="2"/>
         </attr>
         <attr name="rippleMode" format="enum">
             <enum name="none" value="0"/>

@@ -37,13 +37,14 @@ public class RubberLoaderView extends View {
     public static final int MEDIUM = 4;
     public static final int LARGE = 5;
 
-    @IntDef({MODE_NORMAL, MODE_EQUAL})
+    @IntDef({MODE_NORMAL, MODE_EQUAL, MODE_CENTERED})
     @Retention(RetentionPolicy.SOURCE)
     public @interface LoaderMode {
     }
 
     public static final int MODE_NORMAL = 0;
     public static final int MODE_EQUAL = 1;
+    public static final int MODE_CENTERED = 2;
 
     @IntDef({RIPPLE_NONE, RIPPLE_NORMAL, RIPPLE_REVERSE})
     @Retention(RetentionPolicy.SOURCE)
@@ -86,6 +87,9 @@ public class RubberLoaderView extends View {
 
     public RubberLoaderView(Context context) {
         super(context);
+        extractAttrs(null);
+        preparePaint();
+        prepareMetrics();
     }
 
     public RubberLoaderView(Context context, AttributeSet attrs) {
@@ -134,6 +138,46 @@ public class RubberLoaderView extends View {
 
 
     /**
+     * Sets loader animation mode.
+     * Available modes: <i>MODE_NORMAL, MODE_EQUAL, MODE_CENTERED</i>
+     *
+     * @param loaderMode Loader mode flag
+     */
+    public void setMode(@LoaderMode int loaderMode) {
+        this.mode = loaderMode;
+    }
+
+    /**
+     * Sets ripple animation mode.
+     * Available flags: <i>RIPPLE_NONE, RIPPLE_NORMAL, RIPPLE_REVERSE, RIPPLE_CYCLE</i>
+     *
+     * @param rippleMode Ripple mode flag
+     */
+    public void setRippleMode(@RippleMode int rippleMode) {
+        this.ripple = rippleMode;
+    }
+
+    /**
+     * Sets ripple color.
+     *
+     * @param color Ripple color value
+     */
+    public void setRippleColor(@ColorInt int color) {
+        this.rippleColor = color;
+        ripplePaint.setColor(rippleColor);
+    }
+
+    /**
+     * Sets ripple color.
+     *
+     * @param colorId Ripple color resId
+     */
+    public void setRippleRes(@ColorRes int colorId) {
+        this.rippleColor = getResources().getColor(colorId);
+        ripplePaint.setColor(rippleColor);
+    }
+
+    /**
      * Sets animation interpolator.
      *
      * @param interpolator Interpolator to be used by loader animation
@@ -160,7 +204,6 @@ public class RubberLoaderView extends View {
         coors.setStartDelay(delay);
     }
 
-
     /**
      * Starts loader animation
      */
@@ -176,10 +219,6 @@ public class RubberLoaderView extends View {
     public void startLoading(long delay) {
         coors.setStartDelay(delay);
         coors.start();
-    }
-
-    public void setMode(@LoaderMode int mode) {
-        this.mode = mode;
     }
 
     protected int getMode() {
@@ -198,7 +237,7 @@ public class RubberLoaderView extends View {
         TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.RubberLoaderView, 0, 0);
         try {
             primeColor = a.getColor(R.styleable.RubberLoaderView_loaderPrimeColor, Color.BLACK);
-            extraColor = a.getColor(R.styleable.RubberLoaderView_loaderExtraColor, primeColor);
+            extraColor = a.getColor(R.styleable.RubberLoaderView_loaderExtraColor, Color.GRAY);
             rippleColor = a.getColor(R.styleable.RubberLoaderView_rippleColor, Color.WHITE);
 
             size = a.getInt(R.styleable.RubberLoaderView_loaderSize, SMALL);
@@ -242,7 +281,7 @@ public class RubberLoaderView extends View {
     }
 
     private int widthValue() {
-        return (int) (ripple == RIPPLE_NONE ? (4 * radius) : (6 * radius));
+        return (int) (ripple == RIPPLE_NONE ? (4.5 * radius) : (6 * radius));
     }
 
     private int heightValue() {
