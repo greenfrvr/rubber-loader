@@ -1,0 +1,59 @@
+<FrameLayout
+    style="@style/PageFrame"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_2">
+
+    <LinearLayout style="@style/TileContainer">
+
+        <TextView
+            style="@style/TileTitle"
+            android:text="@string/title_mode"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tile_bg"
+            android:padding="24dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Subtitle"
+                    android:text="@string/mode_equal"/>
+
+                <com.greenfrvr.rubberloader.RubberLoaderView
+                    android:id="@+id/loader1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="18dp"
+                    android:layout_marginTop="8dp"
+                    app:loaderExtraColor="@color/extra_2"
+                    app:loaderMode="equal"
+                    app:loaderPrimeColor="@color/prime_2"/>
+
+                <TextView
+                    style="@style/Subtitle"
+                    android:text="@string/mode_centered"/>
+
+                <com.greenfrvr.rubberloader.RubberLoaderView
+                    android:id="@+id/loader2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="18dp"
+                    android:layout_marginTop="8dp"
+                    app:loaderExtraColor="@color/extra_3"
+                    app:loaderMode="centered"
+                    app:loaderPrimeColor="@color/prime_3"/>
+
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+</FrameLayout>

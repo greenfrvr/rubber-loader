@@ -10,6 +10,7 @@ import com.greenfrvr.rubberloader.sample.fragments.ContactsFragment;
 import com.greenfrvr.rubberloader.sample.fragments.GradientSampleFragment;
 import com.greenfrvr.rubberloader.sample.fragments.InterpolatorSampleFragment;
 import com.greenfrvr.rubberloader.sample.fragments.IntroSampleFragment;
+import com.greenfrvr.rubberloader.sample.fragments.ModeSampleFragment;
 import com.greenfrvr.rubberloader.sample.fragments.RippleSampleFragment;
 import com.greenfrvr.rubberloader.sample.fragments.SizesSampleFragment;
 
@@ -18,7 +19,7 @@ import com.greenfrvr.rubberloader.sample.fragments.SizesSampleFragment;
  */
 public class SamplesAdapter extends FragmentStatePagerAdapter {
 
-    public static final int COUNT = 6;
+    public static final int COUNT = 7;
 
     private static final SparseArray<String> fragments = new SparseArray<>(COUNT);
 
@@ -28,7 +29,8 @@ public class SamplesAdapter extends FragmentStatePagerAdapter {
         fragments.put(2, GradientSampleFragment.class.getName());
         fragments.put(3, InterpolatorSampleFragment.class.getName());
         fragments.put(4, RippleSampleFragment.class.getName());
-        fragments.put(5, ContactsFragment.class.getName());
+        fragments.put(5, ModeSampleFragment.class.getName());
+        fragments.put(6, ContactsFragment.class.getName());
     }
 
     private Context context;

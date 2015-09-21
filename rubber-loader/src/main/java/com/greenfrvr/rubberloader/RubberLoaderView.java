@@ -291,6 +291,9 @@ public class RubberLoaderView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (gradient == null) {
+            prepareGradient();
+        }
         updatePaint();
         drawRipple(canvas);
         drawLoader(canvas);
@@ -327,13 +330,14 @@ public class RubberLoaderView extends View {
     }
 
     private void updatePaint() {
-        if (gradient == null) {
-            prepareGradient();
-        }
         gradMatrix.reset();
-        gradMatrix.setTranslate(2.5f * radius * (1 - coors.abs()) * (1 - coors.abs()), 0);
+        gradMatrix.setTranslate(2.5f * radius * (1 - coors.abs()) * (1 - coors.abs()) + centeredOffset(), 0);
         gradMatrix.postRotate(coors.sign() > 0 ? 0 : 180, getWidth() / 2, getHeight() / 2);
 
         gradient.setLocalMatrix(gradMatrix);
+    }
+
+    private float centeredOffset() {
+        return mode == MODE_CENTERED ? radius : 0.0f;
     }
 }
