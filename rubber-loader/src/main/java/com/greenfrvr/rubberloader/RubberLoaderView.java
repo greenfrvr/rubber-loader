@@ -46,7 +46,7 @@ public class RubberLoaderView extends View {
     public static final int MODE_EQUAL = 1;
     public static final int MODE_CENTERED = 2;
 
-    @IntDef({RIPPLE_NONE, RIPPLE_NORMAL, RIPPLE_REVERSE})
+    @IntDef({RIPPLE_NONE, RIPPLE_NORMAL, RIPPLE_REVERSE, RIPPLE_CYCLE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface RippleMode {
     }
