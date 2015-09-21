@@ -103,8 +103,8 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     }
 
     private void evaluateCircleCoors() {
-        float value1 = Math.signum(t) < 0 ? Math.abs(t) : 0;
-        float value2 = Math.signum(t) > 0 ? Math.abs(t) : 0;
+        float value1 = view.getMode() == RubberLoaderView.MODE_EQUAL ? abs() : (sign() < 0 ? abs() : 0);
+        float value2 = view.getMode() == RubberLoaderView.MODE_EQUAL ? abs() : (sign() > 0 ? abs() : 0);
 
         leftCircle.set(-Math.abs(t) * 4 * view.getDiff(), 0, -view.getDiff() * value1);
         rightCircle.set(Math.abs(t) * 4 * view.getDiff(), 0, -view.getDiff() * value2);
@@ -116,8 +116,8 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     private void evaluateBezierCoors() {
         intersection.circlesIntersection(leftCircle, rightCircle, topBezier.getMiddle(), botBezier.getMiddle());
 
-        topEndpoints.evaluateBezierEndpoints(leftCircle, rightCircle, topBezier.middleOffset(0, -.7f * view.getDiff() * Math.abs(t)));
-        botEndpoints.evaluateBezierEndpoints(leftCircle, rightCircle, botBezier.middleOffset(0, .7f * view.getDiff() * Math.abs(t)));
+        topEndpoints.evaluateBezierEndpoints(leftCircle, rightCircle, topBezier.middleOffset(0, -.8f * view.getDiff() * Math.abs(t)));
+        botEndpoints.evaluateBezierEndpoints(leftCircle, rightCircle, botBezier.middleOffset(0, .8f * view.getDiff() * Math.abs(t)));
     }
 
     @Override

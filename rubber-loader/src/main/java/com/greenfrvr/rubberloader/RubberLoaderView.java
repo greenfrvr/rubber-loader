@@ -37,6 +37,14 @@ public class RubberLoaderView extends View {
     public static final int MEDIUM = 4;
     public static final int LARGE = 5;
 
+    @IntDef({MODE_NORMAL, MODE_EQUAL})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface LoaderMode {
+    }
+
+    public static final int MODE_NORMAL = 0;
+    public static final int MODE_EQUAL = 1;
+
     @IntDef({RIPPLE_NONE, RIPPLE_NORMAL, RIPPLE_REVERSE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface RippleMode {
@@ -60,6 +68,7 @@ public class RubberLoaderView extends View {
 
     private int size = SMALL;
     private int ripple = RIPPLE_NONE;
+    private int mode = MODE_NORMAL;
     private float radius;
     private float diff;
     private int primeColor;
@@ -169,6 +178,14 @@ public class RubberLoaderView extends View {
         coors.start();
     }
 
+    public void setMode(@LoaderMode int mode) {
+        this.mode = mode;
+    }
+
+    protected int getMode() {
+        return mode;
+    }
+
     protected float getRadius() {
         return radius;
     }
@@ -186,6 +203,7 @@ public class RubberLoaderView extends View {
 
             size = a.getInt(R.styleable.RubberLoaderView_loaderSize, SMALL);
             ripple = a.getInt(R.styleable.RubberLoaderView_rippleMode, RIPPLE_NONE);
+            mode = a.getInt(R.styleable.RubberLoaderView_loaderMode, MODE_NORMAL);
         } finally {
             a.recycle();
         }
