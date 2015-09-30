@@ -22,6 +22,6 @@
         </attr>
         <attr name="loaderPrimeColor" format="color|reference"/>
         <attr name="loaderExtraColor" format="color|reference"/>
-        <attr name="rippleColor" format="color|reference"/>
+        <attr name="loaderRippleColor" format="color|reference"/>
     </declare-styleable>
 </resources>
