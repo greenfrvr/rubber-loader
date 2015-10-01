@@ -34,8 +34,8 @@
                     app:loaderExtraColor="@color/extra_1"
                     app:loaderPrimeColor="@color/prime_1"
                     app:loaderSize="tiny"
-                    app:rippleColor="@color/extra_1"
-                    app:rippleMode="normal"/>
+                    app:loaderRippleColor="@color/extra_1"
+                    app:loaderRippleMode="normal"/>
 
                 <TextView
                     style="@style/Subtitle"
@@ -50,7 +50,7 @@
                     app:loaderExtraColor="@color/extra_1"
                     app:loaderPrimeColor="@color/prime_1"
                     app:loaderSize="tiny"
-                    app:rippleMode="cycle"/>
+                    app:loaderRippleMode="cycle"/>
 
                 <TextView
                     style="@style/Subtitle"
@@ -66,8 +66,8 @@
                     app:loaderExtraColor="@color/extra_1"
                     app:loaderPrimeColor="@color/prime_1"
                     app:loaderSize="tiny"
-                    app:rippleColor="@color/prime_1"
-                    app:rippleMode="reverse"/>
+                    app:loaderRippleColor="@color/prime_1"
+                    app:loaderRippleMode="reverse"/>
 
             </LinearLayout>
         </FrameLayout>

@@ -29,7 +29,7 @@ Easily reference the library in your Android projects using this dependency in y
 
 ```Gradle 
 dependencies {
-    compile 'com.github.greenfrvr:rubber-loader:1.1.0@aar'
+    compile 'com.github.greenfrvr:rubber-loader:1.1.1@aar'
 }
 ```
 Library available on both jCenter and Maven Central, but in case of any issues (library can't be resolved) use Bintray repo.
@@ -87,21 +87,21 @@ Currently 6 pre-defined sizes are available. Loader with ripple need more space.
 
 ##### Color
 
-Define 2 colors wich will form smooth color transition.  
+Define 2 colors which will form smooth color transition.
 
 ```xml
     <attr name="loaderPrimeColor" format="color|reference"/>
     <attr name="loaderExtraColor" format="color|reference"/>
-    <attr name="rippleColor" format="color|reference"/>
+    <attr name="loaderRippleColor" format="color|reference"/>
 ```
 If you set only `loaderPrimeColor`, its value will be set to `loaderExtraColor`, so loader will be filled with solid prime color. 
 
 ##### Ripples
 
-Select `rippleMode` to add ripple animations effect. Default mode is `none`. Loaders with ripple will have bigger sizes than without them. 
+Select `loaderRippleMode` to add ripple animations effect. Default mode is `none`. Loaders with ripple will have bigger sizes than without them.
 
 ```xml
-	<attr name="rippleMode" format="enum">
+	<attr name="loaderRippleMode" format="enum">
             <enum name="none" value="0"/>
             <enum name="normal" value="1"/>
             <enum name="reverse" value="2"/>

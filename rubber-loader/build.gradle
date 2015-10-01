@@ -1,14 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "23.0.0"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 23
+        versionCode 3
+        versionName "1.1.1"
     }
     buildTypes {
         release {
@@ -20,7 +20,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
     testCompile 'junit:junit:4.12'
 }
 
@@ -37,7 +37,7 @@ ext {
     siteUrl = 'https://bintray.com/greenfrvr/maven/rubber-loader'
     gitUrl = 'https://github.com/greenfrvr/rubber-loader.git'
 
-    libraryVersion = '1.1.0'
+    libraryVersion = '1.1.1'
 
     developerId = 'greenfrvr'
     developerName = 'Artsiom Grintsevich'

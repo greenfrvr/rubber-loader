@@ -238,10 +238,10 @@ public class RubberLoaderView extends View {
         try {
             primeColor = a.getColor(R.styleable.RubberLoaderView_loaderPrimeColor, Color.BLACK);
             extraColor = a.getColor(R.styleable.RubberLoaderView_loaderExtraColor, Color.GRAY);
-            rippleColor = a.getColor(R.styleable.RubberLoaderView_rippleColor, Color.WHITE);
+            rippleColor = a.getColor(R.styleable.RubberLoaderView_loaderRippleColor, Color.WHITE);
 
             size = a.getInt(R.styleable.RubberLoaderView_loaderSize, SMALL);
-            ripple = a.getInt(R.styleable.RubberLoaderView_rippleMode, RIPPLE_NONE);
+            ripple = a.getInt(R.styleable.RubberLoaderView_loaderRippleMode, RIPPLE_NONE);
             mode = a.getInt(R.styleable.RubberLoaderView_loaderMode, MODE_NORMAL);
         } finally {
             a.recycle();

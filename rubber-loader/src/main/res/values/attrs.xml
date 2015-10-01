@@ -14,7 +14,7 @@
             <enum name="equal" value="1"/>
             <enum name="centered" value="2"/>
         </attr>
-        <attr name="rippleMode" format="enum">
+        <attr name="loaderRippleMode" format="enum">
             <enum name="none" value="0"/>
             <enum name="normal" value="1"/>
             <enum name="reverse" value="2"/>
@@ -22,6 +22,6 @@
         </attr>
         <attr name="loaderPrimeColor" format="color|reference"/>
         <attr name="loaderExtraColor" format="color|reference"/>
-        <attr name="rippleColor" format="color|reference"/>
+        <attr name="loaderRippleColor" format="color|reference"/>
     </declare-styleable>
 </resources>
