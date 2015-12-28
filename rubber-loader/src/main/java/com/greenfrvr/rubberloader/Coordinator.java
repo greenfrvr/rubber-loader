@@ -1,11 +1,13 @@
 package com.greenfrvr.rubberloader;
 
 import android.animation.Animator;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
 
 import com.greenfrvr.rubberloader.calculation.BezierEndpoints;
 import com.greenfrvr.rubberloader.calculation.Intersection;
+import com.greenfrvr.rubberloader.internal.LoaderAnimatorListener;
 import com.greenfrvr.rubberloader.internal.BezierQ;
 import com.greenfrvr.rubberloader.internal.Circle;
 import com.greenfrvr.rubberloader.interpolator.PulseInterpolator;
@@ -13,7 +15,7 @@ import com.greenfrvr.rubberloader.interpolator.PulseInterpolator;
 /**
  * Created by greenfrvr
  */
-public class Coordinator extends ValueAnimator implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
+public class Coordinator implements ValueAnimator.AnimatorUpdateListener {
 
     public static final long DEFAULT_DURATION = 700;
 
@@ -28,9 +30,16 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
     private BezierEndpoints topEndpoints;
     private BezierEndpoints botEndpoints;
 
-    private float t = -1f;
+    private float t = -0f;
+    private float lastMoment;
+    private long delay = 0;
     private boolean isForward = false;
     private boolean isBackward = false;
+    private boolean isStarted = false;
+    private boolean isDismissed = false;
+
+    private ValueAnimator mainAnimator;
+    private ValueAnimator optionalAnimator;
 
     public Coordinator(RubberLoaderView view) {
         init();
@@ -42,6 +51,20 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
         this.rightCircle = new Circle();
         this.topBezier = new BezierQ();
         this.botBezier = new BezierQ();
+    }
+
+    public void appear() {
+        optionalAnimator.addListener(appearListener);
+        optionalAnimator.setStartDelay(delay);
+        optionalAnimator.start();
+    }
+
+    public void disappear() {
+        lastMoment = t;
+        isDismissed = true;
+        optionalAnimator.setStartDelay(0);
+        optionalAnimator.addListener(disappearListener);
+        optionalAnimator.start();
     }
 
     public Circle leftCircle() {
@@ -92,14 +115,39 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
         return isForward;
     }
 
+    public float animatedFraction() {
+        return mainAnimator.getAnimatedFraction();
+    }
+
+    public void setInterpolator(TimeInterpolator interpolator) {
+        optionalAnimator.setInterpolator(interpolator);
+        mainAnimator.setInterpolator(interpolator);
+    }
+
+    public void setDelay(long delay) {
+        this.delay = delay;
+    }
+
+    public void setDuration(long duration) {
+        mainAnimator.setDuration(duration);
+    }
+
+    public boolean isRunning() {
+        return mainAnimator.isRunning();
+    }
+
     private void init() {
-        setFloatValues(-1, 1);
-        setDuration(DEFAULT_DURATION);
-        setRepeatMode(REVERSE);
-        setRepeatCount(INFINITE);
-        addUpdateListener(this);
-        addListener(this);
-        setInterpolator(new PulseInterpolator());
+        mainAnimator = ValueAnimator.ofFloat(-1, 1);
+        mainAnimator.setDuration(DEFAULT_DURATION);
+        mainAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        mainAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        mainAnimator.addUpdateListener(this);
+        mainAnimator.addListener(listener);
+        mainAnimator.setInterpolator(new PulseInterpolator());
+
+        optionalAnimator = ValueAnimator.ofFloat(0, 1);
+        optionalAnimator.addUpdateListener(this);
+        optionalAnimator.setDuration(DEFAULT_DURATION / 2);
     }
 
     private void evaluateCircleCoors() {
@@ -139,29 +187,58 @@ public class Coordinator extends ValueAnimator implements ValueAnimator.Animator
         return .8f * view.getDiff() * Math.abs(t);
     }
 
+    private float multiplier() {
+        return isDismissed ? -lastMoment : isStarted ? 2f : -1f;
+    }
+
+    private float offset() {
+        return isDismissed ? lastMoment : isStarted ? -1f : 0f;
+    }
+
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        t = 2f * animation.getAnimatedFraction() - 1f;
+        t = multiplier() * animation.getAnimatedFraction() + offset();
         evaluateCircleCoors();
         evaluateBezierCoors();
         view.invalidate();
     }
 
-    @Override
-    public void onAnimationRepeat(Animator animation) {
-        isBackward = sign() < 0 && !isBackward;
-        isForward = sign() > 0 && !isForward;
-    }
+    private final Animator.AnimatorListener appearListener = new LoaderAnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+            isDismissed = false;
+        }
 
-    @Override
-    public void onAnimationStart(Animator animation) {
-    }
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            isStarted = true;
+            mainAnimator.addUpdateListener(Coordinator.this);
+            mainAnimator.start();
 
-    @Override
-    public void onAnimationEnd(Animator animation) {
-    }
+            optionalAnimator.removeListener(this);
+        }
+    };
 
-    @Override
-    public void onAnimationCancel(Animator animation) {
-    }
+    private final Animator.AnimatorListener disappearListener = new LoaderAnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+            isStarted = false;
+
+            mainAnimator.removeUpdateListener(Coordinator.this);
+            mainAnimator.end();
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            optionalAnimator.removeListener(this);
+        }
+    };
+
+    private final Animator.AnimatorListener listener = new LoaderAnimatorListener() {
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+            isBackward = sign() < 0 && !isBackward;
+            isForward = sign() > 0 && !isForward;
+        }
+    };
 }
