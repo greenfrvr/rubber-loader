@@ -1,4 +1,5 @@
 # RubberLoaderView
+### Version 1.1.2 available!
 
 [![Join the chat at https://gitter.im/greenfrvr/rubber-loader](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/greenfrvr/rubber-loader?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -31,7 +32,7 @@ Easily reference the library in your Android projects using this dependency in y
 
 ```Gradle 
 dependencies {
-    compile 'com.github.greenfrvr:rubber-loader:1.1.1@aar'
+    compile 'com.github.greenfrvr:rubber-loader:1.1.2@aar'
 }
 ```
 Library available on both jCenter and Maven Central, but in case of any issues (library can't be resolved) use Bintray repo.
@@ -113,7 +114,7 @@ Select `loaderRippleMode` to add ripple animations effect. Default mode is `none
 
 ## Usage
 
-There are 2 methods which starts `RubberLoaderView` animation: `RubberLoaderView.startLoading()` and `RubberLoaderView.startLoading(long delay)`
+There are 2 methods which starts `RubberLoaderView` animation: `RubberLoaderView.startLoading()` and `RubberLoaderView.startLoading(long delay)`. To stop `RubberLoader` animation call `RubberLoaderView.stopLoading()`.
 
 Also you can set different interpolation functions by calling `RubberLoaderView.setInterpolator(TimeInterpolator interpolator)`. It's highly recommended to use following interpolators: `PulseInterpolator`, `PulseInverseInterpolator` and `LinearInterpolator`.
 
