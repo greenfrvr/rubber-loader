@@ -13,9 +13,11 @@ import android.graphics.Shader;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.IntDef;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.SparseIntArray;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -56,7 +58,7 @@ public class RubberLoaderView extends View {
     public static final int RIPPLE_REVERSE = 2;
     public static final int RIPPLE_CYCLE = 3;
 
-    private static final SparseIntArray radiusMap = new SparseIntArray(4);
+    private static final SparseIntArray radiusMap = new SparseIntArray(6);
 
     static {
         radiusMap.put(EXTRA_TINY, R.dimen.extra_tiny_radius);
@@ -90,6 +92,7 @@ public class RubberLoaderView extends View {
         extractAttrs(null);
         preparePaint();
         prepareMetrics();
+        prepareInitDrawing();
     }
 
     public RubberLoaderView(Context context, AttributeSet attrs) {
@@ -97,6 +100,7 @@ public class RubberLoaderView extends View {
         extractAttrs(attrs);
         preparePaint();
         prepareMetrics();
+        prepareInitDrawing();
     }
 
     /**
@@ -130,8 +134,8 @@ public class RubberLoaderView extends View {
      * @param extraId Extra color resId
      */
     public void setPaletteRes(@ColorRes int primeId, @ColorRes int extraId) {
-        this.primeColor = getResources().getColor(primeId);
-        this.extraColor = getResources().getColor(extraId);
+        this.primeColor = ContextCompat.getColor(getContext(), primeId);
+        this.extraColor = ContextCompat.getColor(getContext(), extraId);
         pathPaint.setColor(primeColor);
         gradient = null;
     }
@@ -173,7 +177,7 @@ public class RubberLoaderView extends View {
      * @param colorId Ripple color resId
      */
     public void setRippleRes(@ColorRes int colorId) {
-        this.rippleColor = getResources().getColor(colorId);
+        this.rippleColor = ContextCompat.getColor(getContext(), colorId);
         ripplePaint.setColor(rippleColor);
     }
 
@@ -235,15 +239,35 @@ public class RubberLoaderView extends View {
         return coors.isRunning();
     }
 
-    protected int getMode() {
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = MeasureSpec.makeMeasureSpec(widthValue(), MeasureSpec.EXACTLY) + getPaddingLeft() + getPaddingRight();
+        int height = MeasureSpec.makeMeasureSpec(heightValue(), MeasureSpec.EXACTLY) + getPaddingTop() + getPaddingBottom();
+        super.onMeasure(width, height);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        prepareGradient();
+        updatePaint();
+        drawRipple(canvas);
+        drawLoader(canvas);
+    }
+
+    int getMode() {
         return mode;
     }
 
-    protected float getRadius() {
+    int getRipple() {
+        return ripple;
+    }
+
+    float getRadius() {
         return radius;
     }
 
-    protected float getDiff() {
+    float getDiff() {
         return diff;
     }
 
@@ -282,16 +306,22 @@ public class RubberLoaderView extends View {
         diff = radius / 6;
     }
 
-    private void prepareGradient() {
-        gradient = new LinearGradient(getMeasuredWidth() / 2 - 4 * diff, 0, getMeasuredWidth() / 2 + 4 * diff, 0, primeColor, extraColor, Shader.TileMode.CLAMP);
-        pathPaint.setShader(gradient);
+    private void prepareInitDrawing() {
+        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                coors.update();
+                getViewTreeObserver().removeOnPreDrawListener(this);
+                return true;
+            }
+        });
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = MeasureSpec.makeMeasureSpec(widthValue(), MeasureSpec.EXACTLY) + getPaddingLeft() + getPaddingRight();
-        int height = MeasureSpec.makeMeasureSpec(heightValue(), MeasureSpec.EXACTLY) + getPaddingTop() + getPaddingBottom();
-        super.onMeasure(width, height);
+    private void prepareGradient() {
+        if (gradient == null) {
+            gradient = new LinearGradient(getMeasuredWidth() / 2 - 4 * diff, 0, getMeasuredWidth() / 2 + 4 * diff, 0, primeColor, extraColor, Shader.TileMode.CLAMP);
+            pathPaint.setShader(gradient);
+        }
     }
 
     private int widthValue() {
@@ -302,25 +332,10 @@ public class RubberLoaderView extends View {
         return (int) (ripple == RIPPLE_NONE ? (2 * radius) : (6 * radius));
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        if (gradient == null) {
-            prepareGradient();
-        }
-        updatePaint();
-        drawRipple(canvas);
-        drawLoader(canvas);
-    }
-
     private void drawRipple(Canvas canvas) {
         if (ripple != RIPPLE_NONE) {
             ripplePaint.setAlpha((int) (100 * (1 - coors.animatedFraction())));
-            if (ripple == RIPPLE_NORMAL && coors.ripple()) {
-                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 * coors.animatedFraction(), ripplePaint);
-            } else if (ripple == RIPPLE_REVERSE && coors.rippleReverse()) {
-                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 * coors.animatedFraction(), ripplePaint);
-            } else if (ripple == RIPPLE_CYCLE && (coors.ripple() || coors.rippleReverse())) {
+            if (coors.readyForRipple()) {
                 canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 * coors.animatedFraction(), ripplePaint);
             }
         }
@@ -346,7 +361,7 @@ public class RubberLoaderView extends View {
     private void updatePaint() {
         gradMatrix.reset();
         gradMatrix.setTranslate(2.5f * radius * (1 - coors.abs()) * (1 - coors.abs()) + centeredOffset(), 0);
-        gradMatrix.postRotate(coors.sign() > 0 ? 0 : 180, getWidth() / 2, getHeight() / 2);
+        gradMatrix.postRotate(coors.sign() ? 0 : 180, getWidth() / 2, getHeight() / 2);
 
         gradient.setLocalMatrix(gradMatrix);
     }

@@ -17,14 +17,19 @@ import com.greenfrvr.rubberloader.interpolator.PulseInterpolator;
  */
 public class Coordinator implements ValueAnimator.AnimatorUpdateListener {
 
+    private static final float NORMAL_MULTI = 2.0f;
+    private static final float NORMAL_OFFSET = -1.0f;
+    private static final float START_MULTI = -1.0f;
+    private static final float START_OFFSET = 0.0f;
+
     public static final long DEFAULT_DURATION = 700;
 
     private RubberLoaderView view;
 
     private Circle leftCircle;
     private Circle rightCircle;
-    private BezierQ topBezier = new BezierQ();
-    private BezierQ botBezier = new BezierQ();
+    private BezierQ topBezier;
+    private BezierQ botBezier;
 
     private Intersection intersection;
     private BezierEndpoints topEndpoints;
@@ -53,13 +58,13 @@ public class Coordinator implements ValueAnimator.AnimatorUpdateListener {
         this.botBezier = new BezierQ();
     }
 
-    public void appear() {
+    void appear() {
         optionalAnimator.addListener(appearListener);
         optionalAnimator.setStartDelay(delay);
         optionalAnimator.start();
     }
 
-    public void disappear() {
+    void disappear() {
         lastMoment = t;
         isDismissed = true;
         optionalAnimator.setStartDelay(0);
@@ -67,77 +72,97 @@ public class Coordinator implements ValueAnimator.AnimatorUpdateListener {
         optionalAnimator.start();
     }
 
-    public Circle leftCircle() {
+    void update() {
+        evaluateCircleCoors();
+        evaluateBezierCoors();
+
+        view.invalidate();
+    }
+
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+        t = multiplier() * animation.getAnimatedFraction() + offset();
+        update();
+    }
+
+    Circle leftCircle() {
         return leftCircle;
     }
 
-    public Circle rightCircle() {
+    Circle rightCircle() {
         return rightCircle;
     }
 
-    public PointF topLeft() {
+    PointF topLeft() {
         return topBezier.getStart();
     }
 
-    public PointF topRight() {
+    PointF topRight() {
         return topBezier.getEnd();
     }
 
-    public PointF botRight() {
+    PointF botRight() {
         return botBezier.getStart();
     }
 
-    public PointF botLeft() {
+    PointF botLeft() {
         return botBezier.getEnd();
     }
 
-    public PointF topMiddle() {
+    PointF topMiddle() {
         return topBezier.getMiddle();
     }
 
-    public PointF botMiddle() {
+    PointF botMiddle() {
         return botBezier.getMiddle();
     }
 
-    public float sign() {
+    float signum() {
         return Math.signum(t);
     }
 
-    public float abs() {
+    boolean sign() { return signum() > 0; }
+
+    float abs() {
         return Math.abs(t);
     }
 
-    public boolean ripple() {
+    private boolean ripple() {
         return isBackward;
     }
 
-    public boolean rippleReverse() {
+    private boolean rippleReverse() {
         return isForward;
     }
 
-    public float animatedFraction() {
+    float animatedFraction() {
         return mainAnimator.getAnimatedFraction();
     }
 
-    public void setInterpolator(TimeInterpolator interpolator) {
-        optionalAnimator.setInterpolator(interpolator);
+    void setInterpolator(TimeInterpolator interpolator) {
         mainAnimator.setInterpolator(interpolator);
     }
 
-    public void setDelay(long delay) {
+    void setDelay(long delay) {
         this.delay = delay;
     }
 
-    public void setDuration(long duration) {
+    void setDuration(long duration) {
         mainAnimator.setDuration(duration);
     }
 
-    public boolean isRunning() {
+    boolean isRunning() {
         return mainAnimator.isRunning();
     }
 
+    boolean readyForRipple() {
+        return (view.getRipple() == RubberLoaderView.RIPPLE_NORMAL && ripple())
+                || (view.getRipple() == RubberLoaderView.RIPPLE_REVERSE && rippleReverse())
+                || (view.getRipple() == RubberLoaderView.RIPPLE_CYCLE && (ripple() || rippleReverse()));
+    }
+
     private void init() {
-        mainAnimator = ValueAnimator.ofFloat(-1, 1);
+        mainAnimator = ValueAnimator.ofFloat(0, 2);
         mainAnimator.setDuration(DEFAULT_DURATION);
         mainAnimator.setRepeatMode(ValueAnimator.REVERSE);
         mainAnimator.setRepeatCount(ValueAnimator.INFINITE);
@@ -148,6 +173,7 @@ public class Coordinator implements ValueAnimator.AnimatorUpdateListener {
         optionalAnimator = ValueAnimator.ofFloat(0, 1);
         optionalAnimator.addUpdateListener(this);
         optionalAnimator.setDuration(DEFAULT_DURATION / 2);
+        optionalAnimator.setInterpolator(new PulseInterpolator());
     }
 
     private void evaluateCircleCoors() {
@@ -158,24 +184,6 @@ public class Coordinator implements ValueAnimator.AnimatorUpdateListener {
         rightCircle.offset(view.getWidth() / 2 + offsetX(), view.getHeight() / 2, view.getRadius());
     }
 
-    private float leftRadiusDiff() {
-        if (view.getMode() == RubberLoaderView.MODE_EQUAL)
-            return -view.getDiff() * abs();
-        else
-            return -view.getDiff() * (sign() < 0 ? abs() : 0);
-    }
-
-    private float rightRadiusDiff() {
-        if (view.getMode() == RubberLoaderView.MODE_EQUAL)
-            return -view.getDiff() * abs();
-        else
-            return -view.getDiff() * (sign() > 0 ? abs() : 0);
-    }
-
-    private float offsetX() {
-        return view.getMode() != RubberLoaderView.MODE_CENTERED ? 0 : Math.abs(t) * 4 * view.getDiff() * sign();
-    }
-
     private void evaluateBezierCoors() {
         intersection.circlesIntersection(leftCircle, rightCircle, topBezier.getMiddle(), botBezier.getMiddle());
 
@@ -183,24 +191,34 @@ public class Coordinator implements ValueAnimator.AnimatorUpdateListener {
         botEndpoints.evaluateBezierEndpoints(leftCircle, rightCircle, botBezier.middleOffset(0, middleOffset()));
     }
 
+    private float leftRadiusDiff() {
+        if (view.getMode() == RubberLoaderView.MODE_EQUAL)
+            return -view.getDiff() * abs();
+        else
+            return -view.getDiff() * (sign() ? 0 : abs());
+    }
+
+    private float rightRadiusDiff() {
+        if (view.getMode() == RubberLoaderView.MODE_EQUAL)
+            return -view.getDiff() * abs();
+        else
+            return -view.getDiff() * (sign() ? abs() : 0);
+    }
+
+    private float offsetX() {
+        return view.getMode() != RubberLoaderView.MODE_CENTERED ? 0 : Math.abs(t) * 4 * view.getDiff() * signum();
+    }
+
     private float middleOffset() {
         return .8f * view.getDiff() * Math.abs(t);
     }
 
     private float multiplier() {
-        return isDismissed ? -lastMoment : isStarted ? 2f : -1f;
+        return isDismissed ? -lastMoment : isStarted ? NORMAL_MULTI : START_MULTI;
     }
 
     private float offset() {
-        return isDismissed ? lastMoment : isStarted ? -1f : 0f;
-    }
-
-    @Override
-    public void onAnimationUpdate(ValueAnimator animation) {
-        t = multiplier() * animation.getAnimatedFraction() + offset();
-        evaluateCircleCoors();
-        evaluateBezierCoors();
-        view.invalidate();
+        return isDismissed ? lastMoment : isStarted ? NORMAL_OFFSET : START_OFFSET;
     }
 
     private final Animator.AnimatorListener appearListener = new LoaderAnimatorListener() {
@@ -237,8 +255,8 @@ public class Coordinator implements ValueAnimator.AnimatorUpdateListener {
     private final Animator.AnimatorListener listener = new LoaderAnimatorListener() {
         @Override
         public void onAnimationRepeat(Animator animation) {
-            isBackward = sign() < 0 && !isBackward;
-            isForward = sign() > 0 && !isForward;
+            isBackward = !sign() && !isBackward;
+            isForward = sign() && !isForward;
         }
     };
 }
