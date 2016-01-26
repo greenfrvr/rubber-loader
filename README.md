@@ -57,10 +57,10 @@ Different loader modes has different animation behaviour. Default mode is **norm
 
 ```xml
 	<attr name="loaderMode" format="enum">
-            <enum name="normal" value="0"/>
-            <enum name="equal" value="1"/>
-            <enum name="centered" value="2"/>
-        </attr>
+        <enum name="normal" value="0"/>
+        <enum name="equal" value="1"/>
+        <enum name="centered" value="2"/>
+    </attr>
 ```
 
 ##### Size
@@ -79,13 +79,13 @@ Currently 6 pre-defined sizes are available. Loader with ripple need more space.
 
 ```xml
     <attr name="loaderSize" format="enum">
-            <enum name="extra_tiny" value="0"/>
-            <enum name="tiny" value="1"/>
-            <enum name="small" value="2"/>
-            <enum name="normal" value="3"/>
-            <enum name="medium" value="4"/>
-            <enum name="large" value="5"/>
-        </attr>
+        <enum name="extra_tiny" value="0"/>
+        <enum name="tiny" value="1"/>
+        <enum name="small" value="2"/>
+        <enum name="normal" value="3"/>
+        <enum name="medium" value="4"/>
+        <enum name="large" value="5"/>
+    </attr>
 ```
 
 ##### Color
@@ -105,11 +105,11 @@ Select `loaderRippleMode` to add ripple animations effect. Default mode is `none
 
 ```xml
 	<attr name="loaderRippleMode" format="enum">
-            <enum name="none" value="0"/>
-            <enum name="normal" value="1"/>
-            <enum name="reverse" value="2"/>
-            <enum name="cycle" value="3"/>
-        </attr>
+        <enum name="none" value="0"/>
+        <enum name="normal" value="1"/>
+        <enum name="reverse" value="2"/>
+        <enum name="cycle" value="3"/>
+    </attr>
 ```
 
 ## Usage
