@@ -1,3 +1,5 @@
+[![Android Gems](http://www.android-gems.com/badge/greenfrvr/rubber-loader.svg?branch=master)](http://www.android-gems.com/lib/greenfrvr/rubber-loader)
+
 # RubberLoaderView
 ### Version 1.1.2 available!
 
