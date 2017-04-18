@@ -119,7 +119,7 @@ There are 2 methods which starts `RubberLoaderView` animation: `RubberLoaderView
 
 Also you can set different interpolation functions by calling `RubberLoaderView.setInterpolator(TimeInterpolator interpolator)`. It's highly recommended to use following interpolators: `PulseInterpolator`, `PulseInverseInterpolator` and `LinearInterpolator`.
 
-##License
+## License
 
      Copyright 2015 greenfrvr
 
